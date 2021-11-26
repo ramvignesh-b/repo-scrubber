@@ -1,0 +1,41 @@
+<div class="container mt-3">
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-2">
+        <p class="lead mr-2">Found <b>{{repoList.length}}</b> repositories</p>
+        <button class="btn btn-primary me-md-2" type="button" (click)="reset()">Refresh</button>
+        <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#confirmModal" [disabled]="disabled">Delete</button>
+    </div>
+    <ul class="list-group border border-1 rounded" id="listBox">
+        <div *ngFor="let repo of repoList; let i=index">
+            <li class="list-group-item">
+                <input class="form-check-input me-1" type="checkbox" value="" id="{{'_repo' + i}}" [name]="repo.name" (change)="onChange($event)">
+                    <i *ngIf="repo.fork" class="bi bi-star-fill ml-2 mr-2" title="Original">&nbsp;</i>
+                    <i *ngIf="!repo.fork" class="bi bi-git ml-2 mr-2" title="Forked">&nbsp;</i>
+                    <i *ngIf="repo.private" class="bi bi-lock-fill ml-2 mr-2" title="Private">&nbsp;</i>
+                    <i *ngIf="!repo.private" class="bi bi-unlock-fill ml-2 mr-2" title="Public">&nbsp;</i>
+                <a [href]="repo.url" target="_blank">{{repo.name}}</a>
+            </li>
+        </div>
+    </ul>
+</div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true"  data-bs-backdrop="static" data-bs-keyboard="false" >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Delete Confirmation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to <strong>bulk delete</strong> these repos?&nbsp;<i>This action is irreversible.</i>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nope!</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="onDelete()">Hell Yeah!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div id="toastItems" class="toast-container position-absolute top-0 end-0 p-3">
+</div>

@@ -1,0 +1,9 @@
+#listBox {
+    height: calc(100vh - 400px);
+    overflow-y: scroll;
+}
+
+#toastItems {
+    z-index: 100 !important;
+    transition: all 0.6s ease-in-out;
+}
