@@ -7,22 +7,25 @@ import { ApiService } from '../services/ApiService.service';
     styleUrls: ['./repo-list.component.scss']
 })
 export class RepoListComponent implements OnInit {
-    @Input() repoList: any = [];
+    @Input() repoList: any[] = [];
     @Output() load: EventEmitter<boolean> = new EventEmitter<boolean>();
+    repoListOG: any[] = [];
     toDelete: any = [];
     disabled: boolean = true;
+    selected: string = 'all';
 
     constructor(
         private readonly apiService: ApiService
     ) { }
 
     ngOnInit(): void {
+        this.repoListOG = this.repoList;
     }
 
     toastIt(repo: string | null, error?: 'error'): void {
         const toastDiv = document.querySelector('#toastItems');
         const newToast = document.createElement('div');
-        const message: string = error ? (repo ? 'could not be deleted!' : 'You must a select a repo to perfom this action!') : 'was deleted successfully!'
+        const message: string = error ? 'could not be deleted!' : 'was deleted successfully!'
         newToast.className = `toast align-items-center ${error ? 'bg-danger' : 'bg-success'} show top-0 end-0`;
         newToast.setAttribute('role', 'alert');
         newToast.setAttribute('aria-live', 'assertive');
@@ -42,7 +45,6 @@ export class RepoListComponent implements OnInit {
         flexDiv.appendChild(closeBtn);
         newToast.appendChild(flexDiv);
         toastDiv?.appendChild(newToast);
-        console.log(newToast);
         setTimeout(() => {
             newToast.classList.remove('show');
         }, 6000);
@@ -50,6 +52,11 @@ export class RepoListComponent implements OnInit {
 
     onChange(event: any) {
         this.disabled = (document.querySelectorAll('input[type="checkbox"]:checked').length) ? false : true;
+    }
+
+    onDeleteClick(event?: any): void{
+        const deleteList = document.querySelectorAll('input[type="checkbox"]:checked');
+        Array.from(deleteList).forEach(repo => this.toDelete.push(repo.getAttribute('name')))
     }
 
     onDelete(): void {
@@ -62,11 +69,16 @@ export class RepoListComponent implements OnInit {
         }, 3000);
     }
 
-    reset(): void {
-        const checkBoxes = document.querySelectorAll('input[type="checkbox"]:checked');
-        Array.from(checkBoxes).forEach(checkbox => {
-            checkbox.setAttribute('checked', 'false');
+    resetCheckbox(): void {
+        const checkBoxes = document.querySelectorAll('input[type="checkbox"]:checked') as NodeListOf<HTMLInputElement>;
+        Array.from(checkBoxes).forEach((checkbox) => {
+            checkbox.checked = false;
         });
+    }
+
+    reset(): void {
+        this.selected = "all";
+        this.resetCheckbox();
         this.repoList = [];
         this.apiService.getRepoList().subscribe((data: any) => data.forEach((_repo: any) => {
             this.repoList.push({
@@ -76,10 +88,30 @@ export class RepoListComponent implements OnInit {
                 "fork": _repo.fork,
                 "private": _repo.private
             })
+            this.repoListOG = this.repoList;
         }));
     }
 
     loadScreen(value: boolean) {
         this.load.emit(value);
+    }
+
+    onFilter(event: any): void {
+        this.resetCheckbox();
+        switch (event.target.value) {
+            case 'filterForked':
+                this.repoList = this.repoListOG.filter((repo: any) => {
+                    return repo.fork;
+                });
+                break;
+            case 'filterOriginal':
+                this.repoList = this.repoListOG.filter((repo: any) => {
+                    return !repo.fork;
+                })
+                break;
+            default:
+                this.repoList = this.repoListOG;
+                break;
+        }
     }
 }

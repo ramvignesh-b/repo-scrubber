@@ -1,9 +1,13 @@
 #listBox {
-    height: calc(100vh - 400px);
+    height: calc(100vh - 450px);
     overflow-y: scroll;
 }
 
 #toastItems {
     z-index: 100 !important;
     transition: all 0.6s ease-in-out;
+}
+
+#repoCount {
+    min-width: 50%;
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ApiService } from './services/ApiService.service'
 
 @Component({
@@ -6,7 +6,7 @@ import { ApiService } from './services/ApiService.service'
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
     constructor(
         private readonly apiService: ApiService,
     ) { }
@@ -14,22 +14,32 @@ export class AppComponent {
     token: string = '';
     enableList: boolean = false;
     repoList: any[] = [];
+    repoListOG: any[] = [];
     title = 'repo-scrubber';
     error: string = '';
     loadingScreen: boolean = false;
     loadMessage: string = 'Loading...';
     disableForm: boolean = false;
     validate: boolean = false;
+    activeTab: 'scrub' | 'how-to' | 'about' = 'scrub';
+
+    ngOnInit(): void {
+        document.querySelector('#scrub')?.classList.add("active");
+    }
 
     inputChange(event: any) {
         this.validate = (this.username != '' && this.token != '') ? true : false;
     }
 
+    onActive(value: any) {
+        this.activeTab = value;
+    }
+
     apiSuccess(data: any[]) {
-        if(!data)
+        if (!data)
             this.error = "No repo returned"
         data.forEach(_repo => {
-            this.repoList.push({
+            this.repoListOG.push({
                 "id": _repo.id,
                 "name": _repo.name,
                 "url": _repo.html_url,
@@ -37,6 +47,7 @@ export class AppComponent {
                 "private": _repo.private
             })
         })
+        this.repoList = this.repoListOG;
         this.loadingScreen = false;
         this.disableForm = true;
         this.enableList = true;
@@ -67,7 +78,7 @@ export class AppComponent {
         this.error = '';
         this.loadingScreen = true;
         this.loadMessage = 'Retrieving User....';
-        this.apiService.getRepoList(this.username, this.token).subscribe((data: any) => this.apiSuccess(data), (data:any) => this.apiError(data));
+        this.apiService.getRepoList(this.username, this.token).subscribe((data: any) => this.apiSuccess(data), (data: any) => this.apiError(data));
     }
 
 }

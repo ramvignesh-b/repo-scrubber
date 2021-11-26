@@ -1,24 +1,28 @@
 <app-loading-screen [show]="loadingScreen" [message]="loadMessage">Loading...</app-loading-screen>
-<div class="container-sm">
-    <h1 class="display-1 text-center">Repo Scrubber</h1>
-    <div *ngIf="error" class="alert alert-danger" role="alert">
-        <strong>Error!</strong> {{ error }}
+<app-navbar (activeTab)="onActive($event)"></app-navbar>
+<ng-container *ngIf=" activeTab==='scrub'">
+    <div class=" container-sm">
+        <h1 class="display-1 text-center">Repo Scrubber</h1>
+        <div *ngIf="error" class="alert alert-danger" role="alert">
+            <strong>Error!</strong> {{ error }}
+        </div>
+        <form (ngSubmit)="onSubmit()" class="form">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="username" [(ngModel)]="username" name="username" required
+                    placeholder="Username" [disabled]="disableForm" (ngModelChange)="inputChange($event)">
+                <label for="username">Username</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="token" [(ngModel)]="token" required name="token"
+                    placeholder="Token" [disabled]="disableForm" (ngModelChange)="inputChange($event)">
+                <label for="token">Token</label>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success" [disabled]="disableForm || !validate">Get Data</button>
+            </div>
+        </form>
     </div>
-    <form (ngSubmit)="onSubmit()" #gitForm="ngForm" class="form">
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="username" [(ngModel)]="username" name="username" required
-                placeholder="Username" [disabled]="disableForm" (ngModelChange)="inputChange($event)">
-            <label for="username">Username</label>
-        </div>
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="token" [(ngModel)]="token" required name="token"
-                placeholder="Token" [disabled]="disableForm" (ngModelChange)="inputChange($event)">
-            <label for="token">Token</label>
-        </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-success" [disabled]="disableForm || !validate">Get Data</button>
-        </div>
-    </form>
-</div>
-
-<app-repo-list *ngIf="enableList" [repoList]="repoList" (load)="pageLoader($event)"></app-repo-list>
+    <app-repo-list *ngIf="enableList" [repoList]="repoList" (load)="pageLoader($event)"></app-repo-list>
+</ng-container>
+<app-how-to *ngIf="activeTab === 'how-to'"></app-how-to>
+<app-about *ngIf="activeTab === 'about'"></app-about>
