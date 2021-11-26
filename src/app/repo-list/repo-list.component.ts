@@ -56,6 +56,7 @@ export class RepoListComponent implements OnInit {
 
     onDeleteClick(event?: any): void{
         const deleteList = document.querySelectorAll('input[type="checkbox"]:checked');
+        this.toDelete = [];
         Array.from(deleteList).forEach(repo => this.toDelete.push(repo.getAttribute('name')))
     }
 
