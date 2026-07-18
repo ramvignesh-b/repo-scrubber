@@ -1,76 +1,68 @@
-<div class="about-container">
-  <mat-card class="about-card mat-elevation-z8">
-    <mat-card-header class="about-card-header">
-      <div class="header-icon-container">
-        <mat-icon class="about-header-icon">info</mat-icon>
+<div class="about-container p-4" style="max-width: 800px; margin: 0 auto;">
+  <div class="Subhead">
+    <div class="Subhead-heading f2 text-normal d-flex flex-items-center">
+      <svg class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="24" height="24" aria-hidden="true" fill="currentColor">
+        <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-5a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 1.5 0v-4.5A.75.75 0 0 0 8 3Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"></path>
+      </svg>
+      About Repo Scrubber
+    </div>
+    <div class="Subhead-description">Simplify your GitHub workspace cleanup.</div>
+  </div>
+
+  <div class="Box mb-4" style="background-color: var(--color-canvas-subtle); border-color: var(--color-border-default);">
+    <div class="Box-header" style="border-color: var(--color-border-default);">
+      <h3 class="Box-title">What is this tool?</h3>
+    </div>
+    <div class="Box-body" style="color: var(--color-fg-muted);">
+      <p>
+        Repo Scrubber is a focused web application designed to help you bulk-delete unwanted or obsolete GitHub repositories.
+        If you frequently fork repositories or accumulate old experimental projects, this utility cuts down on the tedious manual deletion process.
+      </p>
+      <div class="d-flex flex-wrap mt-3" style="gap: 8px;">
+        <span class="Label Label--accent">Angular 22</span>
+        <span class="Label Label--secondary">Primer Design System</span>
+        <span class="Label Label--success">Cloudflare Pages</span>
       </div>
-      <mat-card-title class="about-title">About Repo Scrubber</mat-card-title>
-      <mat-card-subtitle class="about-subtitle">Simplify your GitHub workspace cleanup</mat-card-subtitle>
-    </mat-card-header>
+    </div>
+  </div>
 
-    <mat-card-content class="about-content">
-      <mat-accordion multi="true">
-        <mat-expansion-panel [expanded]="true">
-          <mat-expansion-panel-header>
-            <mat-panel-title class="panel-title">
-              What is this tool?
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <div class="panel-body">
-            <p>
-              Repo Scrubber is a focused web application designed to help you bulk-delete unwanted or obsolete public GitHub repositories.
-              If you frequently fork repositories or accumulate old experimental projects, this utility cuts down on the tedious manual deletion process.
-            </p>
-            <div class="tech-stack-chips">
-              <span class="tech-chip angular">Angular 22</span>
-              <span class="tech-chip material">Material Design</span>
-              <span class="tech-chip cloudflare">Cloudflare Pages</span>
-            </div>
-          </div>
-        </mat-expansion-panel>
+  <div class="Box mb-4" style="background-color: var(--color-canvas-subtle); border-color: var(--color-border-default);">
+    <div class="Box-header" style="border-color: var(--color-border-default);">
+      <h3 class="Box-title">Why was it built?</h3>
+    </div>
+    <div class="Box-body" style="color: var(--color-fg-muted);">
+      <p>
+        Manually deleting a repository on GitHub requires navigating multiple settings pages and typing the full repository name to confirm.
+        For developers looking to tidy up their workspace, this flow is slow and repetitive.
+      </p>
+      <p>
+        While CLI scripts can automate this task, a secure web interface offers a more intuitive and visually reassuring experience.
+        Repo Scrubber provides a simple, click-to-delete interface to manage multiple repositories efficiently.
+      </p>
+    </div>
+  </div>
 
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title class="panel-title">
-              Why was it built?
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <div class="panel-body">
-            <p>
-              Manually deleting a single repository on GitHub requires navigating multiple settings pages and typing the full repository name to confirm.
-              For developers looking to tidy up their workspace, this flow is slow and repetitive.
-            </p>
-            <p>
-              While CLI scripts can automate this task, a secure web interface offers a more intuitive and visually reassuring experience.
-              Repo Scrubber provides a simple, click-to-delete interface to manage multiple public repositories efficiently.
-            </p>
-          </div>
-        </mat-expansion-panel>
+  <div class="Box mb-4" style="background-color: var(--color-canvas-subtle); border-color: var(--color-border-default);">
+    <div class="Box-header" style="border-color: var(--color-border-default);">
+      <h3 class="Box-title">Security & Privacy</h3>
+    </div>
+    <div class="Box-body" style="color: var(--color-fg-muted);">
+      <p>
+        <strong>Your personal access token is never saved, logged, or transmitted to any third-party server.</strong>
+        All API calls are executed directly from your browser to GitHub's public API endpoints.
+      </p>
+      <p>
+        Furthermore, this tool operates on both <strong>public</strong> and <strong>private</strong> repositories owned by your GitHub account. Always double-check before deleting as this action is irreversible.
+      </p>
+    </div>
+  </div>
 
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title class="panel-title">
-              Security & Privacy
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <div class="panel-body">
-            <p>
-              <strong>Your personal access token is never saved, logged, or transmitted to any third-party server.</strong>
-              All API calls are executed directly from your browser to GitHub's public API endpoints.
-            </p>
-            <p>
-              Furthermore, this tool operates strictly on <strong>public repositories</strong>. Deleting private repositories is out of scope to prevent accidental data loss.
-            </p>
-          </div>
-        </mat-expansion-panel>
-      </mat-accordion>
-    </mat-card-content>
-
-    <mat-card-actions class="about-actions">
-      <a mat-flat-button color="accent" href="https://github.com/ramvignesh-b/repo-scrubber" target="_blank" class="github-btn">
-        <mat-icon>code</mat-icon>
-        View Source Code
-      </a>
-    </mat-card-actions>
-  </mat-card>
+  <div class="d-flex flex-justify-center mt-4">
+    <a href="https://github.com/ramvignesh-b/repo-scrubber" target="_blank" class="btn btn-outline d-inline-flex flex-items-center">
+      <svg class="octicon octicon-code mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true" fill="currentColor">
+        <path d="M4.72 3.22a.75.75 0 0 1 1.06 1.06L2.06 8l3.72 3.72a.75.75 0 1 1-1.06 1.06L.47 8.53a.75.75 0 0 1 0-1.06l4.25-4.25Zm6.56 0a.75.75 0 0 1 0 1.06L15.06 8l-3.72 3.72a.75.75 0 1 1-1.06 1.06l4.25-4.25a.75.75 0 0 1 0-1.06l-4.25-4.25Z"></path>
+      </svg>
+      View Source Code
+    </a>
+  </div>
 </div>
