@@ -100,6 +100,24 @@ html, body {
 }
 
 /* ================================================
+   Octicon host element — always inline-flex so the
+   injected SVG is vertically centered in any context
+   ================================================ */
+[octicon] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  vertical-align: middle;
+  line-height: 0;
+  flex-shrink: 0;
+
+  svg {
+    display: block; /* removes baseline gap below SVG */
+    vertical-align: unset;
+  }
+}
+
+/* ================================================
    Scrollbar
    ================================================ */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
