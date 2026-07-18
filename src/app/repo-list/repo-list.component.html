@@ -2,13 +2,22 @@
 @if (flashes().length > 0) {
 <div class="flashes-container" role="status" aria-live="polite">
     @for (flash of flashes(); track flash) {
-    <div class="flash" [class.flash-success]="flash.type === 'success'" [class.flash-error]="flash.type === 'error'">
+    <div class="flash" [class.flash-success]="flash.type === 'success'" [class.flash-error]="flash.type === 'error'"
+        [class.flash-info]="flash.type === 'info'"
+        style="pointer-events: auto; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); padding: 12px 16px; border-radius: 6px;">
         @if (flash.type === 'success') {
-        <span octicon="check-circle-fill" [size]="16"></span>
+        <span octicon="check-circle" [size]="16" style="flex-shrink: 0;"></span>
+        } @else if (flash.type === 'info') {
+        <span octicon="info" [size]="16" style="flex-shrink: 0;"></span>
         } @else {
-        <span octicon="alert" [size]="16"></span>
+        <span octicon="alert" [size]="16" style="flex-shrink: 0;"></span>
         }
-        <span>{{ flash.message }}</span>
+        <div style="flex-grow: 1; font-size: 13px; line-height: 1.4;">{{ flash.message }}</div>
+        <button type="button" aria-label="Dismiss" (click)="dismissFlash(flash)"
+            style="display: inline-flex; align-items: center; justify-content: center; background: none; border: none; padding: 0; cursor: pointer; color: inherit; opacity: 0.6; flex-shrink: 0; margin-left: 4px;"
+            onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">
+            <span octicon="x" [size]="14"></span>
+        </button>
     </div>
     }
 </div>
@@ -252,7 +261,8 @@
                 <span octicon="trash" [size]="16"></span>
                 Confirm Bulk Deletion
             </h3>
-            <button class="btn-octicon d-inline-flex flex-items-center flex-justify-center" type="button" (click)="onConfirmClose()" aria-label="Close dialog">
+            <button class="btn-octicon d-inline-flex flex-items-center flex-justify-center" type="button"
+                (click)="onConfirmClose()" aria-label="Close dialog">
                 <span octicon="x" [size]="16"></span>
             </button>
         </div>

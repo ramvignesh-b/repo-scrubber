@@ -397,6 +397,12 @@ body {
   color: var(--color-attention-fg) !important;
 }
 
+.flash-info {
+  background-color: var(--color-accent-subtle) !important;
+  border-color: var(--color-accent-muted) !important;
+  color: var(--color-accent-fg) !important;
+}
+
 /* ================================================
    Labels / Badges
    ================================================ */
@@ -667,4 +673,3 @@ span[octicon] {
   justify-content: center;
   vertical-align: middle;
 }
-

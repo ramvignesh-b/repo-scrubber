@@ -34,7 +34,7 @@ export class RepoListComponent {
   sortDirection = signal<'asc' | 'desc'>('asc');
   selectedRepos = signal<Set<string>>(new Set());
   showConfirmModal = signal(false);
-  flashes = signal<{ message: string; type: 'success' | 'error' }[]>([]);
+  flashes = signal<{ message: string; type: 'success' | 'error' | 'info' }[]>([]);
 
   filteredRepoList = computed(() => {
     let list = this.repoList();
@@ -137,12 +137,16 @@ export class RepoListComponent {
     }
   }
 
-  showFlash(message: string, type: 'success' | 'error'): void {
+  showFlash(message: string, type: 'success' | 'error' | 'info'): void {
     const newFlash = { message, type };
     this.flashes.set([...this.flashes(), newFlash]);
     setTimeout(() => {
       this.flashes.set(this.flashes().filter((f) => f !== newFlash));
     }, 5000);
+  }
+
+  dismissFlash(flash: { message: string; type: 'success' | 'error' | 'info' }): void {
+    this.flashes.set(this.flashes().filter((f) => f !== flash));
   }
 
   onDeleteClick(): void {
@@ -155,8 +159,8 @@ export class RepoListComponent {
 
   onConfirmDelete(): void {
     this.showConfirmModal.set(false);
-    const reposArray = Array.from(this.selectedRepos());
-    this.performDeletion(reposArray);
+    const reposToDelete = Array.from(this.selectedRepos());
+    this.performDeletion(reposToDelete);
   }
 
   performDeletion(repos: string[]): void {
@@ -174,7 +178,8 @@ export class RepoListComponent {
         },
         error: (err) => {
           failCount++;
-          this.showFlash(`Failed to delete ${repo}`, 'error');
+          const errMsg = err?.error?.message ? `: ${err.error.message}` : '';
+          this.showFlash(`Failed to delete ${repo}${errMsg}`, 'error');
           console.error(err);
           this.checkProgress(repos.length, ++completedCount, successCount, failCount);
         },
@@ -186,7 +191,7 @@ export class RepoListComponent {
     if (completed === total) {
       setTimeout(() => {
         this.loadList.emit(false);
-        this.showFlash(`Scrubbing complete. Success: ${success}, Failed: ${fail}`, 'success');
+        this.showFlash(`Scrubbing complete. Success: ${success}, Failed: ${fail}`, 'info');
         this.reset();
       }, 1000);
     }
