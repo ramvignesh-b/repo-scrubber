@@ -13,20 +13,18 @@ export class ApiService {
 
     gitApi = 'https://api.github.com/';
 
-    httpOptions: any = {}
+    private getHeaders(): HttpHeaders {
+        return new HttpHeaders({
+            'Accept': 'application/vnd.github.v3+json',
+            'Authorization': `token ${this.token}`
+        });
+    }
 
     getRepoList(username?: string, token?: string): Observable<any[]> {
         if(username && token) {
             this.username = username;
             this.token = token;
         }
-
-        this.httpOptions = {
-            headers: new HttpHeaders({
-                'Accept': 'application/vnd.github.v3+json',
-                'Authorization': `token ${this.token}`
-            })
-        };
 
         return this.fetchPage(1).pipe(
             expand((pageData, index) => {
@@ -38,13 +36,15 @@ export class ApiService {
     }
 
     private fetchPage(page: number): Observable<any[]> {
+        const headers = this.getHeaders();
         return this.http.get<any[]>(
             `${this.gitApi}user/repos?per_page=100&page=${page}&affiliation=owner`,
-            this.httpOptions
+            { headers }
         );
     }
 
     deleteRepo(repo: string | null): Observable<any> {
-        return this.http.delete(`${this.gitApi}repos/${this.username}/${repo}`, this.httpOptions);
+        const headers = this.getHeaders();
+        return this.http.delete(`${this.gitApi}repos/${this.username}/${repo}`, { headers });
     }
 }
