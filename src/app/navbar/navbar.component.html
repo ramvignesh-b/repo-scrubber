@@ -1,15 +1,21 @@
-<nav class="navbar navbar-expand bg-dark navbar-dark">
-    <div class="container-fluid d-flex justify-content-center">
-        <ul class="navbar-nav gap-3">
-            <li class="nav-item">
-                <a class="nav-link" href="#" (click)="onActive($event)" id="scrub">Scrub</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" (click)="onActive($event)" id="how-to">How To?</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" (click)="onActive($event)" id="about">About</a>
-            </li>
-        </ul>
-    </div>
-</nav>
+<mat-toolbar color="primary" class="main-header mat-elevation-z4">
+  <div class="logo-container">
+    <mat-icon class="logo-icon">cleaning_services</mat-icon>
+    <span class="app-title">Repo Scrubber</span>
+  </div>
+  <span class="spacer"></span>
+  <nav class="nav-buttons">
+    <button mat-button (click)="setActive('scrub')" [class.active]="activeId === 'scrub'">
+      <mat-icon class="button-icon">delete_sweep</mat-icon>
+      Scrub
+    </button>
+    <button mat-button (click)="setActive('how-to')" [class.active]="activeId === 'how-to'">
+      <mat-icon class="button-icon">help_outline</mat-icon>
+      How To?
+    </button>
+    <button mat-button (click)="setActive('about')" [class.active]="activeId === 'about'">
+      <mat-icon class="button-icon">info</mat-icon>
+      About
+    </button>
+  </nav>
+</mat-toolbar>

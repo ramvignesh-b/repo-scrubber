@@ -1,20 +1,22 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
     selector: 'app-navbar',
+    standalone: true,
+    imports: [CommonModule, MatToolbarModule, MatButtonModule, MatIconModule],
     templateUrl: './navbar.component.html',
     styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent implements OnInit {
-    @Output() activeTab: EventEmitter<string> = new EventEmitter<string>();
-    constructor() { }
+export class NavbarComponent {
+    @Output() activeTab = new EventEmitter<'scrub' | 'how-to' | 'about'>();
+    activeId: 'scrub' | 'how-to' | 'about' = 'scrub';
 
-    ngOnInit(): void {
-    }
-
-    onActive(event: any): void {
-        Array.from(document.querySelectorAll('.nav-link')).forEach(link => link.classList.remove('active'))
-        event.target.classList.add('active');
-        this.activeTab.emit(event.target.id)
+    setActive(tabId: 'scrub' | 'how-to' | 'about'): void {
+        this.activeId = tabId;
+        this.activeTab.emit(tabId);
     }
 }
