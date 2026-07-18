@@ -1,10 +1,7 @@
 <div class="howto-container p-4" style="max-width: 800px; margin: 0 auto;">
   <div class="Subhead">
     <div class="Subhead-heading f2 text-normal d-flex flex-items-center">
-      <svg class="octicon octicon-question mr-2" viewBox="0 0 16 16" version="1.1" width="24" height="24" aria-hidden="true" fill="currentColor">
-        <path d="M8 10.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm.75-5.25a.75.75 0 0 0-1.5 0v2.5a.75.75 0 0 0 1.5 0v-2.5Z"></path>
-        <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z"></path>
-      </svg>
+      <span octicon="question" [size]="24" class="mr-2"></span>
       Setup Guide
     </div>
     <div class="Subhead-description">Get your Personal Access Token (classic) in 3 simple steps.</div>
@@ -38,16 +35,12 @@
         <div class="Box mb-3 p-3" style="background-color: var(--color-canvas-default); border-color: var(--color-border-default);">
           <ul style="list-style: none; padding-left: 0; margin-bottom: 0;">
             <li class="d-flex flex-items-center mb-2" style="color: var(--color-fg-default);">
-              <svg class="octicon octicon-check-circle-fill mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true" fill="var(--color-success-fg)">
-                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0Zm-3.97-3.03a.75.75 0 0 0-1.08.022L6.78 9.24l-1.97-1.9a.75.75 0 0 0-1.06 1.06L6.28 10.97a.75.75 0 0 0 1.07-.018L12.03 5.03a.75.75 0 0 0-.03-1.06Z"></path>
-              </svg>
+              <span octicon="check-circle-fill" [size]="16" class="mr-2" color="var(--color-success-fg)"></span>
               <code style="background-color: var(--color-canvas-subtle); padding: 2px 6px; border-radius: 3px; font-weight: 600;">repo</code>
               <span class="ml-2 color-fg-muted">(Full control of public & private repositories)</span>
             </li>
             <li class="d-flex flex-items-center" style="color: var(--color-fg-default);">
-              <svg class="octicon octicon-check-circle-fill mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true" fill="var(--color-success-fg)">
-                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0Zm-3.97-3.03a.75.75 0 0 0-1.08.022L6.78 9.24l-1.97-1.9a.75.75 0 0 0-1.06 1.06L6.28 10.97a.75.75 0 0 0 1.07-.018L12.03 5.03a.75.75 0 0 0-.03-1.06Z"></path>
-              </svg>
+              <span octicon="check-circle-fill" [size]="16" class="mr-2" color="var(--color-success-fg)"></span>
               <code style="background-color: var(--color-canvas-subtle); padding: 2px 6px; border-radius: 3px; font-weight: 600;">delete_repo</code>
               <span class="ml-2 color-fg-muted">(Delete repositories)</span>
             </li>
@@ -55,9 +48,7 @@
         </div>
         
         <div class="flash flash-warn mb-4" style="background-color: rgba(210, 153, 34, 0.1); border-color: rgba(210, 153, 34, 0.2); color: #e3b341; border-style: solid; border-width: 1px; padding: 16px; border-radius: 6px; display: flex; align-items: center;">
-          <svg class="octicon octicon-alert mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true" fill="currentColor">
-            <path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.03 11.302c.646 1.213-.233 2.651-1.543 2.651H2.03c-1.31 0-2.189-1.438-1.543-2.651ZM9 4a1 1 0 1 0-2 0v5a1 1 0 1 0 2 0Zm-1 7a1 1 0 1 0 0 2 1 1 0 0 0 0-2Z"></path>
-          </svg>
+          <span octicon="alert" [size]="16" class="mr-2"></span>
           <span><strong>Security Warning:</strong> Only grant these two classic scopes. Do not grant unnecessary scopes to protect your account.</span>
         </div>
 

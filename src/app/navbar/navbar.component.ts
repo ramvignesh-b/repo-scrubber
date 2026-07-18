@@ -1,10 +1,11 @@
 import { Component, Output, EventEmitter, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { OcticonDirective } from '../shared/octicon.directive';
 
 @Component({
     selector: 'app-navbar',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, OcticonDirective],
     templateUrl: './navbar.component.html',
     styleUrls: ['./navbar.component.scss']
 })

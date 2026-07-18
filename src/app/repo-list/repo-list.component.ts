@@ -2,11 +2,12 @@ import { Component, input, output, signal, computed, inject } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../services/ApiService.service';
+import { OcticonDirective } from '../shared/octicon.directive';
 
 @Component({
     selector: 'app-repo-list',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, OcticonDirective],
     templateUrl: './repo-list.component.html',
     styleUrls: ['./repo-list.component.scss']
 })

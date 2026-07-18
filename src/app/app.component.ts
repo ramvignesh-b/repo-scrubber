@@ -8,6 +8,7 @@ import { RepoListComponent } from './repo-list/repo-list.component';
 import { HowToComponent } from './how-to/how-to.component';
 import { AboutComponent } from './about/about.component';
 import { ApiService } from './services/ApiService.service';
+import { OcticonDirective } from './shared/octicon.directive';
 
 @Component({
     selector: 'app-root',
@@ -19,7 +20,8 @@ import { ApiService } from './services/ApiService.service';
         LoadingScreenComponent,
         RepoListComponent,
         HowToComponent,
-        AboutComponent
+        AboutComponent,
+        OcticonDirective
     ],
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss']
