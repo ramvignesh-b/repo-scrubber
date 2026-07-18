@@ -1,25 +1,54 @@
 /* You can add global styles to this file, and also import other style files */
-@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import "@primer/css/dist/primer.css";
+
+:root {
+  color-scheme: dark;
+  --color-canvas-default: #0d1117;
+  --color-canvas-subtle: #161b22;
+  --color-canvas-overlay: #161b22;
+  --color-border-default: #30363d;
+  --color-border-muted: #21262d;
+  --color-fg-default: #c9d1d9;
+  --color-fg-muted: #8b949e;
+  --color-accent-fg: #58a6ff;
+  --color-success-fg: #3fb950;
+  --color-danger-fg: #f85149;
+  --color-btn-bg: #21262d;
+  --color-btn-border: rgba(240, 246, 252, 0.1);
+  --color-btn-text: #c9d1d9;
+  --color-btn-hover-bg: #30363d;
+  --color-btn-primary-bg: #238636;
+  --color-btn-primary-border: rgba(240, 246, 252, 0.1);
+  --color-btn-primary-text: #ffffff;
+  --color-btn-primary-hover-bg: #2ea043;
+  --color-btn-danger-text: #f85149;
+  --color-btn-danger-hover-bg: #da3633;
+  --color-btn-danger-hover-text: #ffffff;
+  --color-btn-outline-text: #58a6ff;
+  --color-btn-outline-hover-bg: #1f6feb;
+  --color-btn-outline-hover-text: #ffffff;
+}
 
 html, body {
   height: 100%;
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  background-color: #121212;
-  color: #e0e0e0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  background-color: var(--color-canvas-default);
+  color: var(--color-fg-default);
 }
 
 /* Custom scrollbars */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #1e1e1e;
+  background: var(--color-canvas-default);
 }
 ::-webkit-scrollbar-thumb {
-  background: #333;
+  background: #30363d;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #444;
+  background: #8b949e;
 }
