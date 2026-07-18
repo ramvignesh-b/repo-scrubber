@@ -1,28 +1,60 @@
 <app-loading-screen [show]="loadingScreen" [message]="loadMessage">Loading...</app-loading-screen>
 <app-navbar (activeTab)="onActive($event)"></app-navbar>
-<ng-container *ngIf=" activeTab==='scrub'">
-    <div class=" container-sm">
-        <h1 class="display-1 text-center">Repo Scrubber</h1>
-        <div *ngIf="error" class="alert alert-danger" role="alert">
-            <strong>Error!</strong> {{ error }}
-        </div>
-        <form (ngSubmit)="onSubmit()" class="form">
-            <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="username" [(ngModel)]="username" name="username" required
-                    placeholder="Username" [disabled]="disableForm" (ngModelChange)="inputChange($event)">
-                <label for="username">Username</label>
+
+<main class="main-content">
+  <ng-container *ngIf="activeTab === 'scrub'">
+    <div class="scrub-container" *ngIf="!enableList">
+      <mat-card class="credentials-card mat-elevation-z8">
+        <mat-card-header class="card-header">
+          <div class="header-icon-container">
+            <mat-icon class="card-header-icon">admin_panel_settings</mat-icon>
+          </div>
+          <mat-card-title class="card-title">GitHub Authentication</mat-card-title>
+          <mat-card-subtitle class="card-subtitle">Retrieve your repositories securely</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content class="card-body-content">
+          <p class="auth-helper-text">
+            Enter your GitHub username and a Personal Access Token with <code>repo</code> and <code>delete_repo</code> permissions.
+            Your credentials are kept strictly in-memory and sent directly to GitHub.
+          </p>
+
+          <div *ngIf="error" class="error-banner">
+            <mat-icon class="error-icon">error_outline</mat-icon>
+            <span class="error-message">{{ error }}</span>
+          </div>
+
+          <form (ngSubmit)="onSubmit()" class="credentials-form">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>GitHub Username</mat-label>
+              <input matInput type="text" id="username" [(ngModel)]="username" name="username" required
+                     [disabled]="disableForm" (ngModelChange)="inputChange($event)" placeholder="e.g. octocat">
+              <mat-icon matSuffix class="field-icon">person</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Personal Access Token</mat-label>
+              <input matInput [type]="hideToken ? 'password' : 'text'" id="token" [(ngModel)]="token" required name="token"
+                     [disabled]="disableForm" (ngModelChange)="inputChange($event)" placeholder="ghp_...">
+              <button mat-icon-button matSuffix (click)="hideToken = !hideToken" [attr.aria-label]="'Hide token'" [attr.aria-pressed]="hideToken" type="button" class="field-icon-btn">
+                <mat-icon class="field-icon">{{hideToken ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+            </mat-form-field>
+
+            <div class="form-actions">
+              <button mat-flat-button color="accent" type="submit" [disabled]="disableForm || !validate" class="submit-btn">
+                <mat-icon>cloud_download</mat-icon>
+                Retrieve Repositories
+              </button>
             </div>
-            <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="token" [(ngModel)]="token" required name="token"
-                    placeholder="Token" [disabled]="disableForm" (ngModelChange)="inputChange($event)">
-                <label for="token">Token</label>
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-success" [disabled]="disableForm || !validate">Get Data</button>
-            </div>
-        </form>
+          </form>
+        </mat-card-content>
+      </mat-card>
     </div>
+
     <app-repo-list *ngIf="enableList" [repoList]="repoList" (load)="pageLoader($event)"></app-repo-list>
-</ng-container>
-<app-how-to *ngIf="activeTab === 'how-to'"></app-how-to>
-<app-about *ngIf="activeTab === 'about'"></app-about>
+  </ng-container>
+
+  <app-how-to *ngIf="activeTab === 'how-to'"></app-how-to>
+  <app-about *ngIf="activeTab === 'about'"></app-about>
+</main>
