@@ -1,8 +1,245 @@
-.modal-backdrop {
-  backdrop-filter: blur(4px);
-  transition: backdrop-filter 0.2s ease;
+/* ================================================
+   Repo List Container
+   ================================================ */
+.repo-list-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
 }
 
-.Box-row:hover {
-  background-color: var(--color-canvas-default) !important;
+/* ================================================
+   Flashes (toast notifications)
+   ================================================ */
+.flashes-container {
+  position: fixed;
+  top: 72px;
+  right: 20px;
+  z-index: 9998;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 360px;
+  width: 100%;
+  pointer-events: none;
+
+  .flash {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    pointer-events: auto;
+  }
+}
+
+/* ================================================
+   Search / Filter bar
+   ================================================ */
+.filters-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-input-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 220px;
+
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-fg-muted);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+  }
+
+  .form-control {
+    padding-left: 34px !important;
+  }
+}
+
+/* ================================================
+   Repo rows
+   ================================================ */
+.repo-rows {
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+.repo-row {
+  transition: background-color 0.1s ease;
+
+  &:hover {
+    background-color: var(--color-canvas-inset) !important;
+  }
+
+  &.selected-row {
+    background-color: var(--color-accent-subtle) !important;
+  }
+}
+
+.repo-type-icon {
+  color: var(--color-fg-muted);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.repo-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.repo-name-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.repo-name-link {
+  font-weight: 600;
+  color: var(--color-accent-fg);
+  text-decoration: none;
+  word-break: break-word;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.repo-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.repo-external-link {
+  color: var(--color-fg-muted);
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 4px;
+  transition: color 0.1s ease, background-color 0.1s ease;
+
+  &:hover {
+    color: var(--color-fg-default);
+    background-color: var(--color-neutral-subtle);
+  }
+}
+
+/* ================================================
+   Blankslate
+   ================================================ */
+.blankslate {
+  text-align: center;
+  padding: 48px 32px;
+
+  .blankslate-icon {
+    color: var(--color-fg-muted);
+    display: block;
+    margin: 0 auto 16px;
+  }
+
+  .blankslate-heading {
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--color-fg-default);
+    margin: 0 0 8px;
+  }
+
+  .blankslate-description {
+    color: var(--color-fg-muted);
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+/* ================================================
+   Confirmation Modal
+   ================================================ */
+.confirm-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.confirm-dialog {
+  width: 100%;
+  max-width: 480px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-canvas-overlay) !important;
+  box-shadow: var(--color-shadow-extra-large);
+
+  .Box-body {
+    overflow-y: auto;
+  }
+}
+
+.repo-delete-list {
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+/* ================================================
+   Label--danger (not in Primer by default)
+   ================================================ */
+.Label--danger {
+  background-color: var(--color-danger-subtle) !important;
+  border: 1px solid var(--color-danger-muted) !important;
+  color: var(--color-danger-fg) !important;
+}
+
+/* ================================================
+   Counter badge
+   ================================================ */
+.Counter {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 6px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  border-radius: 20px;
+  background-color: var(--color-neutral-muted);
+  color: var(--color-fg-default);
+  border: 1px solid var(--color-border-default);
+}
+
+.Counter--primary {
+  background-color: var(--color-accent-emphasis);
+  color: var(--color-fg-on-emphasis);
+  border-color: transparent;
+}
+
+/* ================================================
+   Subhead actions
+   ================================================ */
+.Subhead {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  .Subhead-heading {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .Subhead-actions {
+    flex-shrink: 0;
+  }
 }

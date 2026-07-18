@@ -1,131 +1,208 @@
-<!-- Flashes alerts container -->
-<div class="flashes-container" style="position: fixed; top: 70px; right: 20px; z-index: 999; display: flex; flex-direction: column; gap: 8px; max-width: 350px; width: 100%;">
-  @for (flash of flashes(); track flash) {
-    <div class="flash" [class.flash-success]="flash.type === 'success'" [class.flash-error]="flash.type === 'error'" style="border-style: solid; border-width: 1px; padding: 12px; border-radius: 6px; display: flex; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.45);">
-      @if (flash.type === 'success') {
-        <span octicon="check-circle-fill" [size]="16" class="mr-2"></span>
-      } @else {
-        <span octicon="alert" [size]="16" class="mr-2"></span>
-      }
-      <span style="font-size: 0.9rem;">{{ flash.message }}</span>
-    </div>
-  }
-</div>
+<!-- Toast flash notifications -->
+@if (flashes().length > 0) {
+  <div class="flashes-container" role="status" aria-live="polite">
+    @for (flash of flashes(); track flash) {
+      <div
+        class="flash"
+        [class.flash-success]="flash.type === 'success'"
+        [class.flash-error]="flash.type === 'error'">
+        @if (flash.type === 'success') {
+          <span octicon="check-circle-fill" [size]="16"></span>
+        } @else {
+          <span octicon="alert" [size]="16"></span>
+        }
+        <span>{{ flash.message }}</span>
+      </div>
+    }
+  </div>
+}
 
-<div class="repo-list-container p-4" style="max-width: 900px; margin: 0 auto;">
-  <div class="d-flex flex-justify-between flex-items-center flex-wrap mb-4" style="gap: 12px;">
-    <div>
-      <h2 class="f2 text-normal" style="color: var(--color-fg-default); margin-bottom: 4px;">Your Repositories</h2>
-      <p class="color-fg-muted mb-0">Total repositories: <strong>{{ repoList().length }}</strong></p>
+<div class="repo-list-container">
+  <!-- Header row: title + action buttons -->
+  <div class="Subhead">
+    <div class="Subhead-heading d-flex flex-items-center" style="gap: 8px; flex-wrap: wrap;">
+      <span octicon="repo" [size]="20"></span>
+      Your Repositories
+      <span class="Counter" title="{{ repoList().length }} total repositories">{{ repoList().length }}</span>
     </div>
-    <div class="d-flex" style="gap: 8px;">
-      <button class="btn btn-outline d-inline-flex flex-items-center" type="button" (click)="reset()" style="height: 34px;">
-        <span octicon="sync" [size]="14" class="mr-2"></span>
+    <div class="Subhead-actions d-flex" style="gap: 8px; flex-shrink: 0;">
+      <button
+        class="btn d-inline-flex flex-items-center"
+        type="button"
+        (click)="reset()"
+        title="Refresh repositories"
+        style="gap: 6px;">
+        <span octicon="sync" [size]="14"></span>
         Refresh
       </button>
-      <button class="btn btn-danger d-inline-flex flex-items-center" type="button" [disabled]="disabledDelete()" (click)="onDeleteClick()" style="height: 34px;">
-        <span octicon="trash" [size]="14" class="mr-2"></span>
-        Delete Selected ({{ selectedRepos().size }})
+      <button
+        class="btn btn-danger d-inline-flex flex-items-center"
+        type="button"
+        [disabled]="disabledDelete()"
+        (click)="onDeleteClick()"
+        style="gap: 6px;">
+        <span octicon="trash" [size]="14"></span>
+        Delete Selected
+        @if (selectedRepos().size > 0) {
+          <span class="Counter Counter--primary ml-1">{{ selectedRepos().size }}</span>
+        }
       </button>
     </div>
   </div>
 
-  <!-- Filters -->
-  <div class="d-flex flex-wrap mb-3" style="gap: 12px; width: 100%;">
-    <div class="flex-grow-2" style="flex-grow: 2; min-width: 250px;">
-      <input class="form-control input-block" type="text" placeholder="Search repositories..." [ngModel]="searchText()" (ngModelChange)="searchText.set($event)" style="background-color: var(--color-canvas-subtle); border-color: var(--color-border-default); color: var(--color-fg-default); width: 100%; height: 34px;">
+  <!-- Filters bar -->
+  <div class="filters-bar mb-3">
+    <div class="search-input-wrapper">
+      <span octicon="search" [size]="16" class="search-icon"></span>
+      <input
+        class="form-control"
+        type="search"
+        placeholder="Search repositories…"
+        [ngModel]="searchText()"
+        (ngModelChange)="searchText.set($event)"
+        aria-label="Search repositories">
     </div>
-    <div class="flex-grow-1" style="flex-grow: 1; min-width: 150px;">
-      <select class="form-select" [ngModel]="filterType()" (ngModelChange)="filterType.set($event)" style="background-color: var(--color-canvas-subtle); border-color: var(--color-border-default); color: var(--color-fg-default); width: 100%; height: 34px;">
-        <option value="all">All Types</option>
-        <option value="forked">Forked Only</option>
-        <option value="original">Original Only</option>
-      </select>
-    </div>
+    <select
+      class="form-select"
+      [ngModel]="filterType()"
+      (ngModelChange)="filterType.set($event)"
+      aria-label="Filter by type"
+      style="max-width: 180px;">
+      <option value="all">All Types</option>
+      <option value="forked">Forked Only</option>
+      <option value="original">Original Only</option>
+    </select>
   </div>
 
-  <!-- Box -->
-  <div class="Box" style="background-color: var(--color-canvas-subtle); border-color: var(--color-border-default);">
-    <div class="Box-header d-flex flex-items-center" style="border-color: var(--color-border-default); padding: 12px 16px;">
-      <input type="checkbox" class="mr-3" [checked]="isAllSelected()" [indeterminate]="isSomeSelected()" (change)="toggleSelectAll($event)">
-      <span class="color-fg-default" style="font-weight: 600;">
-        Select All {{ filteredRepoList().length }} Match(es)
-      </span>
+  <!-- Repository Box -->
+  <div class="Box">
+    <!-- Select-all header -->
+    <div class="Box-header">
+      <label class="d-flex flex-items-center" style="gap: 10px; cursor: pointer; margin: 0;">
+        <input
+          type="checkbox"
+          [checked]="isAllSelected()"
+          [indeterminate]="isSomeSelected()"
+          (change)="toggleSelectAll($event)"
+          aria-label="Select all repositories">
+        <span class="f6 color-fg-default" style="font-weight: 600;">
+          Select all {{ filteredRepoList().length }} repositor{{ filteredRepoList().length === 1 ? 'y' : 'ies' }}
+        </span>
+      </label>
     </div>
 
-    <div class="Box-body p-0" style="max-height: 480px; overflow-y: auto;">
+    <!-- Repo rows -->
+    <div class="repo-rows">
       @for (repo of filteredRepoList(); track repo.id) {
-        <div class="Box-row d-flex flex-items-center" style="border-color: var(--color-border-default); padding: 12px 16px;">
-          <input type="checkbox" class="mr-3" [checked]="selectedRepos().has(repo.name)" (change)="toggleSelect(repo.name)">
-          
-          <span class="mr-2 d-flex flex-items-center" style="color: var(--color-fg-muted);">
-            @if (repo.fork) {
-              <span octicon="git-branch" [size]="16"></span>
-            } @else {
-              <span octicon="repo" [size]="16"></span>
-            }
-          </span>
+        <div class="Box-row repo-row" [class.selected-row]="selectedRepos().has(repo.name)">
+          <label class="d-flex flex-items-center width-full" style="cursor: pointer; gap: 10px; margin: 0;">
+            <input
+              type="checkbox"
+              [checked]="selectedRepos().has(repo.name)"
+              (change)="toggleSelect(repo.name)"
+              [attr.aria-label]="'Select ' + repo.name">
 
-          <div class="d-flex flex-column" style="gap: 2px;">
-            <div class="d-flex flex-items-center flex-wrap" style="gap: 8px;">
-              <a [href]="repo.url" target="_blank" style="font-weight: 600; color: var(--color-accent-fg); text-decoration: none;">
-                {{ repo.name }}
-              </a>
-              
-              <span class="Label Label--secondary" style="font-size: 0.7rem; padding: 2px 6px;">
-                {{ repo.private ? 'Private' : 'Public' }}
-              </span>
+            <span class="repo-type-icon" [title]="repo.fork ? 'Forked repository' : 'Original repository'">
+              @if (repo.fork) {
+                <span octicon="repo-forked" [size]="16"></span>
+              } @else {
+                <span octicon="repo" [size]="16"></span>
+              }
+            </span>
+
+            <div class="repo-info">
+              <div class="repo-name-row">
+                <a
+                  [href]="repo.url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="repo-name-link"
+                  (click)="$event.stopPropagation()">
+                  {{ repo.name }}
+                </a>
+                <span
+                  class="Label"
+                  [class.Label--secondary]="!repo.private"
+                  [class.Label--danger]="repo.private">
+                  {{ repo.private ? 'Private' : 'Public' }}
+                </span>
+                @if (repo.fork) {
+                  <span class="Label Label--secondary">Fork</span>
+                }
+              </div>
             </div>
-          </div>
 
-          <div class="ml-auto d-flex flex-items-center" style="gap: 12px;">
-            @if (repo.private) {
-              <span octicon="lock" [size]="16" color="var(--color-danger-fg)" title="Private Repository"></span>
-            }
-            <a [href]="repo.url" target="_blank" style="color: var(--color-fg-muted);" title="Open on GitHub">
-              <span octicon="link-external" [size]="16"></span>
-            </a>
-          </div>
+            <div class="repo-actions ml-auto">
+              <a
+                [href]="repo.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="repo-external-link"
+                title="Open on GitHub"
+                (click)="$event.stopPropagation()">
+                <span octicon="link-external" [size]="14"></span>
+              </a>
+            </div>
+          </label>
         </div>
       } @empty {
-        <div class="blankslate" style="background-color: transparent; padding: 4rem 1rem; text-align: center;">
-          <span octicon="folder" [size]="32" style="color: var(--color-fg-muted);" class="mb-2"></span>
-          <p class="color-fg-muted mb-0">No repositories found matching your filters.</p>
+        <div class="blankslate">
+          <span octicon="search" [size]="32" class="blankslate-icon"></span>
+          <h3 class="blankslate-heading">No repositories found</h3>
+          <p class="blankslate-description">Try adjusting your search or filter to find what you're looking for.</p>
         </div>
       }
     </div>
   </div>
 </div>
 
-<!-- Primer Dialog Confirmation Overlay Modal -->
+<!-- Confirmation Modal -->
 @if (showConfirmModal()) {
-  <div class="modal-backdrop d-flex flex-items-center flex-justify-center" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.65); z-index: 1000;">
-    <div class="Box d-flex flex-column" style="background-color: var(--color-canvas-overlay); border-color: var(--color-border-default); width: 100%; max-width: 460px; max-height: 85vh; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.5);">
-      <div class="Box-header d-flex flex-items-center flex-justify-between" style="border-color: var(--color-border-default); padding: 16px;">
-        <h3 class="Box-title">Confirm Bulk Deletion</h3>
-        <button class="btn-link" type="button" (click)="onConfirmClose()" style="color: var(--color-fg-muted); border: none; background: transparent; cursor: pointer; font-size: 1.5rem; line-height: 1; padding: 0 4px;">&times;</button>
+  <div class="confirm-backdrop" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+    <div class="Box confirm-dialog">
+      <div class="Box-header d-flex flex-items-center flex-justify-between">
+        <h3 class="Box-title" id="confirm-title" style="color: var(--color-danger-fg); display: flex; align-items: center; gap: 6px;">
+          <span octicon="trash" [size]="16"></span>
+          Confirm Bulk Deletion
+        </h3>
+        <button
+          class="btn-octicon"
+          type="button"
+          (click)="onConfirmClose()"
+          aria-label="Close dialog">
+          <span octicon="x" [size]="16"></span>
+        </button>
       </div>
-      
-      <div class="Box-body overflow-y-auto" style="padding: 16px; color: var(--color-fg-default);">
-        <p class="mb-3">Are you sure you want to <strong>permanently delete</strong> the following <strong>{{ selectedRepos().size }}</strong> selected repositories?</p>
-        
-        <div class="border rounded-2 p-2 mb-3" style="background-color: var(--color-canvas-default); border-color: var(--color-border-default); max-height: 150px; overflow-y: auto;">
-          <ul style="padding-left: 20px; margin-bottom: 0;">
-            @for (repo of selectedRepos(); track repo) {
-              <li class="color-fg-default font-weight-bold" style="word-break: break-all;">{{ repo }}</li>
-            }
-          </ul>
+
+      <div class="Box-body">
+        <p class="mb-3">
+          Are you sure you want to <strong>permanently delete</strong>
+          <strong>{{ selectedRepos().size }}</strong> selected
+          {{ selectedRepos().size === 1 ? 'repository' : 'repositories' }}?
+        </p>
+
+        <!-- List of repos to delete -->
+        <div class="Box mb-3 repo-delete-list">
+          @for (repo of selectedRepos(); track repo) {
+            <div class="Box-row d-flex flex-items-center" style="gap: 8px; padding: 8px 12px;">
+              <span octicon="repo" [size]="14" style="color: var(--color-fg-muted); flex-shrink: 0;"></span>
+              <span style="font-weight: 600; word-break: break-all; color: var(--color-fg-default);">{{ repo }}</span>
+            </div>
+          }
         </div>
-        
-        <div class="flash flash-error mb-0" style="font-size: 0.85rem; padding: 12px; border-radius: 6px; display: flex; align-items: center; background-color: rgba(248, 81, 73, 0.1); border-color: rgba(248, 81, 73, 0.2); color: #ff7b72; border-style: solid; border-width: 1px;">
-          <span octicon="alert" [size]="16" class="mr-2" style="flex-shrink: 0;"></span>
-          <span>This action is irreversible and will delete repositories forever.</span>
+
+        <div class="flash flash-error" role="alert">
+          <span octicon="alert" [size]="16"></span>
+          <span>This action is <strong>irreversible</strong> and will delete these repositories forever.</span>
         </div>
       </div>
-      
-      <div class="Box-footer d-flex flex-justify-end" style="border-color: var(--color-border-default); padding: 16px; gap: 8px;">
-        <button class="btn btn-outline" type="button" (click)="onConfirmClose()">Cancel</button>
-        <button class="btn btn-danger" type="button" (click)="onConfirmDelete()">Permanently Delete</button>
+
+      <div class="Box-footer d-flex flex-justify-end" style="gap: 8px;">
+        <button class="btn" type="button" (click)="onConfirmClose()">Cancel</button>
+        <button class="btn btn-danger d-inline-flex flex-items-center" type="button" (click)="onConfirmDelete()" style="gap: 6px;">
+          <span octicon="trash" [size]="14"></span>
+          Permanently Delete
+        </button>
       </div>
     </div>
   </div>

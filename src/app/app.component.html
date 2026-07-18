@@ -1,69 +1,106 @@
-<app-loading-screen [show]="loadingScreen()" [message]="loadMessage()">Loading...</app-loading-screen>
+<app-loading-screen [show]="loadingScreen()" [message]="loadMessage()"></app-loading-screen>
 <app-navbar (activeTab)="onActive($event)"></app-navbar>
 
 <main class="main-content">
   @if (activeTab() === 'scrub') {
     @if (!enableList()) {
-      <div class="auth-wrapper d-flex flex-column flex-items-center flex-justify-center" style="min-height: 80vh; padding: 2rem 1rem;">
-        <div class="width-full" style="max-width: 450px;">
-          <!-- Header -->
-          <div class="text-center mb-4">
-            <span octicon="mark-github" [size]="48" style="color: var(--color-fg-default);"></span>
-            <h1 class="f2 text-normal mt-3" style="color: var(--color-fg-default);">GitHub Authentication</h1>
-            <p class="color-fg-muted">Retrieve your repositories securely</p>
+      <!-- Auth screen centered layout -->
+      <div class="auth-screen">
+        <!-- Hero heading -->
+        <div class="auth-hero">
+          <span octicon="mark-github" [size]="44" class="auth-hero-icon"></span>
+          <h1 class="auth-hero-title">GitHub Authentication</h1>
+          <p class="auth-hero-subtitle">Connect your account to retrieve and manage your repositories.</p>
+        </div>
+
+        <!-- Auth Box -->
+        <div class="Box auth-box">
+          <div class="Box-header">
+            <h2 class="Box-title">Sign in to continue</h2>
           </div>
-
-          <!-- Box -->
-          <div class="Box p-4" style="background-color: var(--color-canvas-subtle); border-color: var(--color-border-default);">
-            <p class="f5 color-fg-muted mb-3">
-              Enter your GitHub credentials. Your personal access token is processed strictly in-memory within your browser.
-            </p>
-
+          <div class="Box-body">
+            <!-- Error flash -->
             @if (error()) {
-              <div class="flash flash-error mb-3" style="border-style: solid; border-width: 1px; padding: 12px; border-radius: 6px; display: flex; align-items: center; background-color: rgba(248, 81, 73, 0.1); border-color: rgba(248, 81, 73, 0.2); color: #ff7b72;">
-                <span octicon="alert" class="mr-2" [size]="16"></span>
-                <span style="font-size: 0.9rem;">{{ error() }}</span>
+              <div class="flash flash-error mb-3" role="alert">
+                <span octicon="alert" [size]="16"></span>
+                <span>{{ error() }}</span>
               </div>
             }
 
-            <form (ngSubmit)="onSubmit()">
-              <!-- Username input -->
-              <div class="form-group mb-3">
+            <form (ngSubmit)="onSubmit()" autocomplete="off">
+              <!-- Username -->
+              <div class="form-group">
                 <div class="form-group-header">
-                  <label for="username" style="color: var(--color-fg-default); font-weight: 500;">GitHub Username</label>
+                  <label for="username">GitHub Username</label>
                 </div>
                 <div class="form-group-body">
-                  <input class="form-control input-block" type="text" id="username" [(ngModel)]="username" name="username" required [disabled]="disableForm()" placeholder="e.g. octocat" style="background-color: var(--color-canvas-default); border-color: var(--color-border-default); color: var(--color-fg-default); width: 100%;">
+                  <input
+                    class="form-control input-block"
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="e.g. octocat"
+                    required
+                    [disabled]="disableForm()"
+                    [(ngModel)]="username">
                 </div>
               </div>
 
-              <!-- Token input -->
-              <div class="form-group mb-3">
-                <div class="form-group-header d-flex flex-justify-between">
-                  <label for="token" style="color: var(--color-fg-default); font-weight: 500;">Personal Access Token</label>
-                  <button class="btn-link" type="button" (click)="hideToken.set(!hideToken())" style="font-size: 0.8rem; color: var(--color-accent-fg); text-decoration: none; border: none; background: transparent; cursor: pointer;">
+              <!-- Token -->
+              <div class="form-group mt-3">
+                <div class="form-group-header d-flex flex-justify-between flex-items-center">
+                  <label for="token">Personal Access Token</label>
+                  <button
+                    class="btn-link"
+                    type="button"
+                    (click)="hideToken.set(!hideToken())"
+                    style="color: var(--color-accent-fg); font-size: 12px; border: none; background: transparent; cursor: pointer; padding: 0;">
                     {{ hideToken() ? 'Show' : 'Hide' }}
                   </button>
                 </div>
                 <div class="form-group-body">
-                  <input class="form-control input-block" [type]="hideToken() ? 'password' : 'text'" id="token" [(ngModel)]="token" required name="token" [disabled]="disableForm()" placeholder="ghp_..." style="background-color: var(--color-canvas-default); border-color: var(--color-border-default); color: var(--color-fg-default); width: 100%;">
+                  <input
+                    class="form-control input-block"
+                    [type]="hideToken() ? 'password' : 'text'"
+                    id="token"
+                    name="token"
+                    placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                    required
+                    [disabled]="disableForm()"
+                    [(ngModel)]="token">
                 </div>
+                <p class="note mt-1">Your token is processed in-memory only and never stored.</p>
               </div>
 
-              <!-- Submit button -->
-              <div class="form-actions mt-4">
-                <button class="btn btn-primary btn-block" type="submit" [disabled]="disableForm() || !validate()" style="width: 100%; height: 38px; font-size: 0.95rem; font-weight: 600;">
+              <!-- Submit -->
+              <div class="mt-4">
+                <button
+                  class="btn btn-primary btn-block"
+                  type="submit"
+                  [disabled]="disableForm() || !validate()">
+                  @if (disableForm()) {
+                    <span octicon="sync" [size]="14" class="mr-2 anim-rotate"></span>
+                  } @else {
+                    <span octicon="repo" [size]="14" class="mr-2"></span>
+                  }
                   Retrieve Repositories
                 </button>
               </div>
             </form>
           </div>
+        </div>
 
-          <div class="Box mt-3 p-3 text-center" style="background-color: transparent; border-style: dashed; border-width: 1px; border-color: var(--color-border-default);">
-            <p class="color-fg-muted mb-0" style="font-size: 0.85rem;">
-              Don't have a token? <a href="#" (click)="activeTab.set('how-to'); $event.preventDefault();" style="color: var(--color-accent-fg);">Read the Setup Guide</a>.
-            </p>
-          </div>
+        <!-- Footer hint -->
+        <div class="auth-hint">
+          <p class="color-fg-muted">
+            Don't have a token?
+            <a
+              href="#"
+              (click)="activeTab.set('how-to'); $event.preventDefault();"
+              style="color: var(--color-accent-fg);">
+              Read the Setup Guide →
+            </a>
+          </p>
         </div>
       </div>
     }
