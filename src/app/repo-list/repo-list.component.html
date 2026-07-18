@@ -1,54 +1,75 @@
-<div class="container mt-3">
-    <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-2">
-        <p class="lead mr-2" id="repoCount">Found <b>{{repoList.length}}</b> repositories</p>
-        <select class="form-select form-select-sm" aria-label="Filter Repo" id="filterRepo" [(ngModel)]="selected"
-            (change)="onFilter($event)">
-            <option selected value="all">Show All</option>
-            <option value="filterForked">Forked</option>
-            <option value="filterOriginal">Original</option>
-        </select>
-        <button class="btn btn-primary me-md-2" type="button" (click)="reset()">Refresh</button>
-        <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#confirmModal"
-            [disabled]="disabled" (click)="onDeleteClick($event)">Delete</button>
-    </div>
-    <ul class="list-group border border-1 rounded" id="listBox">
-        <div *ngFor="let repo of repoList; let i=index">
-            <li class="list-group-item">
-                <input class="form-check-input me-1" type="checkbox" value="" id="{{'_repo' + i}}" [name]="repo.name"
-                    (change)="onChange($event)">
-                <i *ngIf="!repo.fork" class="bi bi-star-fill ml-2 mr-2" title="Original">&nbsp;</i>
-                <i *ngIf="repo.fork" class="bi bi-git ml-2 mr-2" title="Forked">&nbsp;</i>
-                <i *ngIf="repo.private" class="bi bi-lock-fill ml-2 mr-2" title="Private">&nbsp;</i>
-                <i *ngIf="!repo.private" class="bi bi-unlock-fill ml-2 mr-2" title="Public">&nbsp;</i>
-                <a [href]="repo.url" target="_blank">{{repo.name}}</a>
-            </li>
-        </div>
-    </ul>
-</div>
+<div class="repo-list-container">
+  <mat-card class="repo-card mat-elevation-z8">
+    <mat-card-header class="repo-header">
+      <mat-card-title class="repo-title">Your Repositories</mat-card-title>
+      <mat-card-subtitle class="repo-subtitle">
+        Found <strong>{{ repoListOG.length }}</strong> repositories
+      </mat-card-subtitle>
+    </mat-card-header>
 
-<!-- Modal -->
-<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true"
-    data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Delete Confirmation</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to <strong>bulk delete</strong> these repos?&nbsp;<br />
-                <span *ngFor="let repo of toDelete"><b>{{ repo }}</b>, </span> <br />
-                <i>This action is
-                    irreversible.</i>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nope!</button>
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="onDelete()">Hell
-                    Yeah!</button>
-            </div>
-        </div>
-    </div>
-</div>
+    <mat-card-content class="repo-content">
+      <div class="filter-actions-bar">
+        <div class="filters">
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Search by name</mat-label>
+            <input matInput [(ngModel)]="searchText" (ngModelChange)="applyFilters()" placeholder="e.g. repo-scrubber">
+            <mat-icon matSuffix class="filter-icon">search</mat-icon>
+          </mat-form-field>
 
-<div id="toastItems" class="toast-container position-absolute top-0 end-0 p-3">
+          <mat-form-field appearance="outline" class="type-field">
+            <mat-label>Filter Type</mat-label>
+            <mat-select [(ngModel)]="filterType" (selectionChange)="applyFilters()">
+              <mat-option value="all">Show All</mat-option>
+              <mat-option value="forked">Forked Only</mat-option>
+              <mat-option value="original">Original Only</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="actions">
+          <button mat-stroked-button (click)="reset()" class="action-btn refresh-btn">
+            <mat-icon>refresh</mat-icon>
+            Refresh
+          </button>
+          <button mat-flat-button color="warn" [disabled]="disabledDelete" (click)="onDeleteClick()" class="action-btn delete-btn">
+            <mat-icon>delete_sweep</mat-icon>
+            Delete Selected
+          </button>
+        </div>
+      </div>
+
+      <div class="list-scroll-container">
+        <mat-selection-list #repoListSelection (selectionChange)="onSelectionChange()" class="repo-selection-list">
+          <mat-list-option *ngFor="let repo of filteredRepoList; let i = index" [value]="repo.name" class="repo-item">
+            <div class="repo-item-content">
+              <mat-icon matListItemIcon class="repo-type-icon" [color]="repo.fork ? 'accent' : 'primary'">
+                {{ repo.fork ? 'call_split' : 'star' }}
+              </mat-icon>
+              
+              <div class="repo-info">
+                <span class="repo-name">{{ repo.name }}</span>
+                <span class="repo-badge" [class.badge-fork]="repo.fork" [class.badge-orig]="!repo.fork">
+                  {{ repo.fork ? 'Fork' : 'Original' }}
+                </span>
+              </div>
+              
+              <span class="spacer"></span>
+              
+              <div class="repo-actions-end">
+                <mat-icon *ngIf="repo.private" class="private-icon" title="Private Repository">lock</mat-icon>
+                <a [href]="repo.url" target="_blank" mat-icon-button (click)="$event.stopPropagation()" class="open-link-btn" title="View on GitHub">
+                  <mat-icon class="open-icon">open_in_new</mat-icon>
+                </a>
+              </div>
+            </div>
+          </mat-list-option>
+        </mat-selection-list>
+
+        <div *ngIf="filteredRepoList.length === 0" class="no-repos-found">
+          <mat-icon class="empty-icon">folder_open</mat-icon>
+          <p>No repositories match your current filters.</p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>
