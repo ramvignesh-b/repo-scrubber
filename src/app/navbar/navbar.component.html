@@ -1,16 +1,5 @@
-<header class="Header">
-    <div class="Header-item mr-3">
-        <!-- <a
-      href="#"
-      class="Header-link d-flex flex-items-center"
-      style="font-weight: 600; font-size: 16px; gap: 8px"
-    >
-      <span octicon="repo" [size]="20" style="color: #f0883e"></span>
-      Repo Scrubber
-    </a> -->
-    </div>
-
-    <div class="Header-item Header-item--full">
+<header class="Header d-flex flex-justify-center">
+    <div class="Header-item">
         <nav class="UnderlineNav" aria-label="Main Navigation">
             <div class="UnderlineNav-body">
                 <button class="UnderlineNav-item" [class.selected]="activeId() === 'scrub'" (click)="setActive('scrub')"

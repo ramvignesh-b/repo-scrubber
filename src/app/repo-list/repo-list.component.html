@@ -17,10 +17,10 @@
 <div class="repo-list-container">
     <!-- Header row: title + action buttons -->
     <div class="Subhead">
-        <div class="Subhead-heading d-flex flex-items-center" style="gap: 8px; flex-wrap: wrap">
-            <span octicon="repo" [size]="20"></span>
-            Your Repositories
-            <span class="Counter" title="{{ repoList().length }} total repositories">{{
+        <div class="Subhead-heading d-flex flex-items-center" style="gap: 8px;">
+            <span octicon="repo" [size]="20" style="flex-shrink: 0;"></span>
+            <span style="white-space: nowrap;">Your Repositories</span>
+            <span class="Counter" title="{{ repoList().length }} total repositories" style="flex-shrink: 0;">{{
                 repoList().length
                 }}</span>
         </div>
