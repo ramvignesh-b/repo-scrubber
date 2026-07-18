@@ -1,21 +1,70 @@
-<div class="container-sm">
-    <h1 class="display-1 text-center">How to?</h1>
-    <ul class="list-group mb-3">
-        <li class="list-group-item">
-            <p class="lead"><span class="display-6">Step 1: </span> Head to <a href="https://github.com/settings/tokens">GitHub Settings</a> and click on <mark>Generate Token</mark></p>
-            <img src="assets/1.jpg" class="rounded mx-auto d-block img-fluid" alt="Step 1" />
-        </li>
-        <li class="list-group-item">
-            <p class="lead"><span class="display-6">Step 2: </span> Check <mark>repo</mark> and <mark>delete_repo</mark> checkboxes and click on <mark>Generate Token</mark></p>
-            <img src="assets/2.jpg" class="rounded mx-auto d-block img-fluid" alt="Step 2" />
-        </li>
-        <li class="list-group-item">
-            <p class="lead"><span class="display-6">Step 3: </span> Copy the generated <mark>token</mark> and paste it in <a href="">Scrub page</a></p>
-            <img src="assets/3.jpg" class="rounded mx-auto d-block img-fluid" alt="Step 3" />
-        </li>
-        <li class="list-group-item">
-            <p class="lead"><span class="display-6">Demo: </span>
-            <img src="assets/demo.gif" class="rounded mx-auto d-block img-fluid" alt="Demo" />
-        </li>
-    </ul>
+<div class="howto-container">
+  <mat-card class="howto-card mat-elevation-z8">
+    <mat-card-header class="howto-card-header">
+      <div class="header-icon-container">
+        <mat-icon class="howto-header-icon">help_outline</mat-icon>
+      </div>
+      <mat-card-title class="howto-title">Setup Guide</mat-card-title>
+      <mat-card-subtitle class="howto-subtitle">Get your Personal Access Token in 3 simple steps</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content class="howto-content">
+      <mat-stepper orientation="vertical" [linear]="false" #stepper>
+        <mat-step label="Navigate to GitHub Token Settings">
+          <div class="step-content">
+            <p class="step-description">
+              Go to <a href="https://github.com/settings/tokens" target="_blank" class="github-link">GitHub Personal Access Tokens Settings</a>.
+              Click on the <strong>Generate new token</strong> dropdown and select <strong>Generate new token (classic)</strong>.
+            </p>
+            <div class="step-image-container">
+              <img src="assets/1.jpg" class="step-image" alt="GitHub Token Generation Step 1" />
+            </div>
+            <div class="step-actions">
+              <button mat-flat-button color="primary" matStepperNext>Next</button>
+            </div>
+          </div>
+        </mat-step>
+
+        <mat-step label="Select Required Scopes">
+          <div class="step-content">
+            <p class="step-description">
+              Give your token a descriptive note (e.g., <code>repo-scrubber</code>). 
+              To allow bulk deletion, check the following checkboxes under scopes:
+            </p>
+            <ul class="scopes-list">
+              <li><mat-icon class="check-icon">check_circle</mat-icon> <code>repo</code> (Full control of public & private repositories)</li>
+              <li><mat-icon class="check-icon">check_circle</mat-icon> <code>delete_repo</code> (Delete repositories)</li>
+            </ul>
+            <div class="step-warning">
+              <mat-icon class="warning-icon">warning</mat-icon>
+              <span><strong>Security Warning:</strong> Only grant these two classic scopes. Do not grant unnecessary scopes to protect your account.</span>
+            </div>
+            <div class="step-image-container">
+              <img src="assets/2.jpg" class="step-image" alt="GitHub Token Scopes Selection Step 2" />
+            </div>
+            <div class="step-actions">
+              <button mat-button matStepperPrevious class="back-btn">Back</button>
+              <button mat-flat-button color="primary" matStepperNext>Next</button>
+            </div>
+          </div>
+        </mat-step>
+
+        <mat-step label="Copy Token & Start Scrubbing">
+          <div class="step-content">
+            <p class="step-description">
+              Click <strong>Generate token</strong> at the bottom of the page.
+              Copy the generated token string immediately. Paste the copied token along with your GitHub username on the <strong>Scrub</strong> page.
+            </p>
+            <div class="step-image-container">
+              <img src="assets/3.jpg" class="step-image" alt="Copy Generated Token Step 3" />
+            </div>
+            <div class="step-actions">
+              <button mat-button matStepperPrevious class="back-btn">Back</button>
+              <button mat-flat-button color="accent" matStepperNext>Got It</button>
+            </div>
+          </div>
+        </mat-step>
+      </mat-stepper>
+    </mat-card-content>
+  </mat-card>
 </div>
