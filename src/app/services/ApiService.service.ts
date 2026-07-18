@@ -1,14 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, expand, reduce, EMPTY } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-    constructor(
-        private http: HttpClient
-    ) { }
+    private readonly http = inject(HttpClient);
 
     token: string = '';
     username: string = '';
@@ -17,17 +15,35 @@ export class ApiService {
 
     httpOptions: any = {}
 
-    getRepoList(username?: string, token?: string): Observable<any> {
+    getRepoList(username?: string, token?: string): Observable<any[]> {
         if(username && token) {
             this.username = username;
             this.token = token;
         }
 
         this.httpOptions = {
-            headers: { 'Content-Type': 'application/vnd.github.v3+json', 'Authorization': `token ${this.token}`}
+            headers: new HttpHeaders({
+                'Accept': 'application/vnd.github.v3+json',
+                'Authorization': `token ${this.token}`
+            })
         };
-        return this.http.get(`${this.gitApi}users/${this.username}/repos?per_page=100`, this.httpOptions)
+
+        return this.fetchPage(1).pipe(
+            expand((pageData, index) => {
+                // If pageData has 100 items, fetch the next page (index is 0-indexed, so index + 2 is page number)
+                return pageData.length === 100 ? this.fetchPage(index + 2) : EMPTY;
+            }),
+            reduce((acc, current) => acc.concat(current), [] as any[])
+        );
     }
+
+    private fetchPage(page: number): Observable<any[]> {
+        return this.http.get<any[]>(
+            `${this.gitApi}user/repos?per_page=100&page=${page}&affiliation=owner`,
+            this.httpOptions
+        );
+    }
+
     deleteRepo(repo: string | null): Observable<any> {
         return this.http.delete(`${this.gitApi}repos/${this.username}/${repo}`, this.httpOptions);
     }
