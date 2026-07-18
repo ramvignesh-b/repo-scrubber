@@ -1,6 +1,11 @@
-<div *ngIf="show" class="loading-overlay">
-  <div class="loading-content">
-    <mat-spinner color="accent" diameter="60"></mat-spinner>
-    <h3 class="loading-message">{{ message }}</h3>
+@if (show) {
+  <div class="loading-overlay">
+    <div class="loading-content">
+      <svg class="anim-rotate" viewBox="0 0 16 16" width="50" height="50" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="8" cy="8" r="7" stroke-opacity="0.15"></circle>
+        <circle cx="8" cy="8" r="7" stroke-dasharray="12 32" stroke-linecap="round" color="var(--color-accent-fg)"></circle>
+      </svg>
+      <h3 class="loading-message">{{ message }}</h3>
+    </div>
   </div>
-</div>
+}
