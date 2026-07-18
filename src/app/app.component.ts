@@ -1,11 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 
 import { NavbarComponent } from './navbar/navbar.component';
 import { LoadingScreenComponent } from './loading-screen/loading-screen.component';
@@ -20,11 +15,6 @@ import { ApiService } from './services/ApiService.service';
     imports: [
         CommonModule,
         FormsModule,
-        MatCardModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        MatIconModule,
         NavbarComponent,
         LoadingScreenComponent,
         RepoListComponent,
@@ -35,41 +25,35 @@ import { ApiService } from './services/ApiService.service';
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-    constructor(
-        private readonly apiService: ApiService,
-    ) { }
+    private readonly apiService = inject(ApiService);
     
-    username: string = '';
-    token: string = '';
-    enableList: boolean = false;
-    repoList: any[] = [];
-    repoListOG: any[] = [];
+    username = signal('');
+    token = signal('');
+    enableList = signal(false);
+    repoList = signal<any[]>([]);
     title = 'repo-scrubber';
-    error: string = '';
-    loadingScreen: boolean = false;
-    loadMessage: string = 'Loading...';
-    disableForm: boolean = false;
-    validate: boolean = false;
-    activeTab: 'scrub' | 'how-to' | 'about' = 'scrub';
-    hideToken: boolean = true;
+    error = signal('');
+    loadingScreen = signal(false);
+    loadMessage = signal('Loading...');
+    disableForm = signal(false);
+    activeTab = signal<'scrub' | 'how-to' | 'about'>('scrub');
+    hideToken = signal(true);
 
-    inputChange(event: any) {
-        this.validate = (this.username.trim() !== '' && this.token.trim() !== '') ? true : false;
-    }
+    validate = computed(() => this.username().trim() !== '' && this.token().trim() !== '');
 
-    onActive(value: any) {
-        this.activeTab = value;
+    onActive(value: 'scrub' | 'how-to' | 'about') {
+        this.activeTab.set(value);
     }
 
     apiSuccess(data: any[]) {
-        if (!data) {
-            this.error = "No repositories returned.";
-            this.loadingScreen = false;
+        if (!data || data.length === 0) {
+            this.error.set("No repositories returned. Make sure the user owns repositories.");
+            this.loadingScreen.set(false);
             return;
         }
-        this.repoListOG = [];
+        const cleaned: any[] = [];
         data.forEach(_repo => {
-            this.repoListOG.push({
+            cleaned.push({
                 "id": _repo.id,
                 "name": _repo.name,
                 "url": _repo.html_url,
@@ -77,39 +61,39 @@ export class AppComponent {
                 "private": _repo.private
             });
         });
-        this.repoList = this.repoListOG;
-        this.loadingScreen = false;
-        this.disableForm = true;
-        this.enableList = true;
+        this.repoList.set(cleaned);
+        this.loadingScreen.set(false);
+        this.disableForm.set(true);
+        this.enableList.set(true);
     }
 
     apiError(error: any) {
         switch (error.status) {
             case 401:
-                this.error = "Invalid personal access token. Please verify its permissions.";
+                this.error.set("Invalid personal access token. Please verify its scope permissions.");
                 break;
             case 404:
-                this.error = "Invalid GitHub username. User not found.";
+                this.error.set("Invalid GitHub credentials or username not found.");
                 break;
             default:
-                this.error = "An error occurred while connecting to GitHub API.";
+                this.error.set("An error occurred while connecting to GitHub API. Please check your connection.");
                 break;
         }
-        this.loadingScreen = false;
+        this.loadingScreen.set(false);
         console.error(error);
     }
 
-    pageLoader(value: any): void {
-        this.loadMessage = 'Deleting repositories...';
-        this.loadingScreen = value;
+    pageLoader(value: boolean): void {
+        this.loadMessage.set('Deleting repositories...');
+        this.loadingScreen.set(value);
     }
 
     onSubmit() {
-        this.error = '';
-        this.loadingScreen = true;
-        this.loadMessage = 'Retrieving repositories...';
-        this.apiService.getRepoList(this.username, this.token).subscribe({
-            next: (data: any) => this.apiSuccess(data),
+        this.error.set('');
+        this.loadingScreen.set(true);
+        this.loadMessage.set('Retrieving repositories...');
+        this.apiService.getRepoList(this.username(), this.token()).subscribe({
+            next: (data: any[]) => this.apiSuccess(data),
             error: (err: any) => this.apiError(err)
         });
     }

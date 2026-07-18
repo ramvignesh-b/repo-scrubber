@@ -1,60 +1,87 @@
-<app-loading-screen [show]="loadingScreen" [message]="loadMessage">Loading...</app-loading-screen>
+<app-loading-screen [show]="loadingScreen()" [message]="loadMessage()">Loading...</app-loading-screen>
 <app-navbar (activeTab)="onActive($event)"></app-navbar>
 
 <main class="main-content">
-  <ng-container *ngIf="activeTab === 'scrub'">
-    <div class="scrub-container" *ngIf="!enableList">
-      <mat-card class="credentials-card mat-elevation-z8">
-        <mat-card-header class="card-header">
-          <div class="header-icon-container">
-            <mat-icon class="card-header-icon">admin_panel_settings</mat-icon>
-          </div>
-          <mat-card-title class="card-title">GitHub Authentication</mat-card-title>
-          <mat-card-subtitle class="card-subtitle">Retrieve your repositories securely</mat-card-subtitle>
-        </mat-card-header>
-
-        <mat-card-content class="card-body-content">
-          <p class="auth-helper-text">
-            Enter your GitHub username and a Personal Access Token with <code>repo</code> and <code>delete_repo</code> permissions.
-            Your credentials are kept strictly in-memory and sent directly to GitHub.
-          </p>
-
-          <div *ngIf="error" class="error-banner">
-            <mat-icon class="error-icon">error_outline</mat-icon>
-            <span class="error-message">{{ error }}</span>
+  @if (activeTab() === 'scrub') {
+    @if (!enableList()) {
+      <div class="auth-wrapper d-flex flex-column flex-items-center flex-justify-center" style="min-height: 80vh; padding: 2rem 1rem;">
+        <div class="width-full" style="max-width: 450px;">
+          <!-- Header -->
+          <div class="text-center mb-4">
+            <svg class="octicon octicon-mark-github color-fg-default" viewBox="0 0 16 16" version="1.1" width="48" height="48" fill="currentColor">
+              <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.35 3.12.91 0 .68.01 1.24.01 1.47 0 .21-.15.47-.55.38A8.012 8.012 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
+            </svg>
+            <h1 class="f2 text-normal mt-3" style="color: var(--color-fg-default);">GitHub Authentication</h1>
+            <p class="color-fg-muted">Retrieve your repositories securely</p>
           </div>
 
-          <form (ngSubmit)="onSubmit()" class="credentials-form">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>GitHub Username</mat-label>
-              <input matInput type="text" id="username" [(ngModel)]="username" name="username" required
-                     [disabled]="disableForm" (ngModelChange)="inputChange($event)" placeholder="e.g. octocat">
-              <mat-icon matSuffix class="field-icon">person</mat-icon>
-            </mat-form-field>
+          <!-- Box -->
+          <div class="Box p-4" style="background-color: var(--color-canvas-subtle); border-color: var(--color-border-default);">
+            <p class="f5 color-fg-muted mb-3">
+              Enter your GitHub credentials. Your personal access token is processed strictly in-memory within your browser.
+            </p>
 
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Personal Access Token</mat-label>
-              <input matInput [type]="hideToken ? 'password' : 'text'" id="token" [(ngModel)]="token" required name="token"
-                     [disabled]="disableForm" (ngModelChange)="inputChange($event)" placeholder="ghp_...">
-              <button mat-icon-button matSuffix (click)="hideToken = !hideToken" [attr.aria-label]="'Hide token'" [attr.aria-pressed]="hideToken" type="button" class="field-icon-btn">
-                <mat-icon class="field-icon">{{hideToken ? 'visibility_off' : 'visibility'}}</mat-icon>
-              </button>
-            </mat-form-field>
+            @if (error()) {
+              <div class="flash flash-error mb-3" style="border-style: solid; border-width: 1px; padding: 12px; border-radius: 6px; display: flex; align-items: center; background-color: rgba(248, 81, 73, 0.1); border-color: rgba(248, 81, 73, 0.2); color: #ff7b72;">
+                <svg class="octicon octicon-alert mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true" fill="currentColor">
+                  <path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.03 11.302c.646 1.213-.233 2.651-1.543 2.651H2.03c-1.31 0-2.189-1.438-1.543-2.651ZM9 4a1 1 0 1 0-2 0v5a1 1 0 1 0 2 0Zm-1 7a1 1 0 1 0 0 2 1 1 0 0 0 0-2Z"></path>
+                </svg>
+                <span style="font-size: 0.9rem;">{{ error() }}</span>
+              </div>
+            }
 
-            <div class="form-actions">
-              <button mat-flat-button color="accent" type="submit" [disabled]="disableForm || !validate" class="submit-btn">
-                <mat-icon>cloud_download</mat-icon>
-                Retrieve Repositories
-              </button>
-            </div>
-          </form>
-        </mat-card-content>
-      </mat-card>
-    </div>
+            <form (ngSubmit)="onSubmit()">
+              <!-- Username input -->
+              <div class="form-group mb-3">
+                <div class="form-group-header">
+                  <label for="username" style="color: var(--color-fg-default); font-weight: 500;">GitHub Username</label>
+                </div>
+                <div class="form-group-body">
+                  <input class="form-control input-block" type="text" id="username" [(ngModel)]="username" name="username" required [disabled]="disableForm()" placeholder="e.g. octocat" style="background-color: var(--color-canvas-default); border-color: var(--color-border-default); color: var(--color-fg-default); width: 100%;">
+                </div>
+              </div>
 
-    <app-repo-list *ngIf="enableList" [repoList]="repoList" (load)="pageLoader($event)"></app-repo-list>
-  </ng-container>
+              <!-- Token input -->
+              <div class="form-group mb-3">
+                <div class="form-group-header d-flex flex-justify-between">
+                  <label for="token" style="color: var(--color-fg-default); font-weight: 500;">Personal Access Token</label>
+                  <button class="btn-link" type="button" (click)="hideToken.set(!hideToken())" style="font-size: 0.8rem; color: var(--color-accent-fg); text-decoration: none; border: none; background: transparent; cursor: pointer;">
+                    {{ hideToken() ? 'Show' : 'Hide' }}
+                  </button>
+                </div>
+                <div class="form-group-body">
+                  <input class="form-control input-block" [type]="hideToken() ? 'password' : 'text'" id="token" [(ngModel)]="token" required name="token" [disabled]="disableForm()" placeholder="ghp_..." style="background-color: var(--color-canvas-default); border-color: var(--color-border-default); color: var(--color-fg-default); width: 100%;">
+                </div>
+              </div>
 
-  <app-how-to *ngIf="activeTab === 'how-to'"></app-how-to>
-  <app-about *ngIf="activeTab === 'about'"></app-about>
+              <!-- Submit button -->
+              <div class="form-actions mt-4">
+                <button class="btn btn-primary btn-block" type="submit" [disabled]="disableForm() || !validate()" style="width: 100%; height: 38px; font-size: 0.95rem; font-weight: 600;">
+                  Retrieve Repositories
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div class="Box mt-3 p-3 text-center" style="background-color: transparent; border-style: dashed; border-width: 1px; border-color: var(--color-border-default);">
+            <p class="color-fg-muted mb-0" style="font-size: 0.85rem;">
+              Don't have a token? <a href="#" (click)="activeTab.set('how-to'); $event.preventDefault();" style="color: var(--color-accent-fg);">Read the Setup Guide</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (enableList()) {
+      <app-repo-list [repoList]="repoList()" (load)="pageLoader($event)"></app-repo-list>
+    }
+  }
+
+  @if (activeTab() === 'how-to') {
+    <app-how-to></app-how-to>
+  }
+
+  @if (activeTab() === 'about') {
+    <app-about></app-about>
+  }
 </main>
