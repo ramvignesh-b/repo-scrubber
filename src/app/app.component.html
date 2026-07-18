@@ -1,101 +1,111 @@
 <app-loading-screen [show]="loadingScreen()" [message]="loadMessage()"></app-loading-screen>
-<app-navbar (activeTab)="onActive($event)"></app-navbar>
+<app-navbar [selectedTab]="activeTab()" (activeTab)="onActive($event)"></app-navbar>
 
 <main class="main-content">
-    @if (activeTab() === 'scrub') {
+  @if (activeTab() === 'scrub') {
     @if (!enableList()) {
-    <!-- Auth screen centered layout -->
-    <div class="auth-screen">
+      <!-- Auth screen centered layout -->
+      <div class="auth-screen">
         <!-- Hero heading -->
         <div class="auth-hero">
-            <span octicon="mark-github" [size]="44" class="auth-hero-icon"></span>
-            <h1 class="auth-hero-title">GitHub Authentication</h1>
-            <p class="auth-hero-subtitle">Enter your GitHub username and a Personal Access Token to retrieve your
-                repositories.</p>
+          <span octicon="mark-github" [size]="44" class="auth-hero-icon"></span>
+          <h1 class="auth-hero-title">GitHub Authentication</h1>
+          <p class="auth-hero-subtitle">
+            Enter your GitHub username and a Personal Access Token to retrieve your repositories.
+          </p>
         </div>
 
-        <!-- Auth Box -->
+        <!-- Auth Box (no header — just the form in a clean box) -->
         <div class="Box auth-box">
-            <div class="Box-header">
-                <h2 class="Box-title">Enter your credentials</h2>
-            </div>
-            <div class="Box-body">
-                <!-- Error flash -->
-                @if (error()) {
-                <div class="flash flash-error mb-3" role="alert">
-                    <span octicon="alert" [size]="16"></span>
-                    <span>{{ error() }}</span>
+          <div class="Box-body">
+            <!-- Error flash -->
+            @if (error()) {
+              <div class="flash flash-error mb-3" role="alert">
+                <span octicon="alert" [size]="16"></span>
+                <span>{{ error() }}</span>
+              </div>
+            }
+
+            <form (ngSubmit)="onSubmit()" autocomplete="off">
+              <!-- Username -->
+              <div class="form-group">
+                <label class="form-label" for="username">GitHub Username</label>
+                <input
+                  class="form-control input-block"
+                  type="text"
+                  id="username"
+                  name="username"
+                  placeholder="e.g. octocat"
+                  required
+                  [disabled]="disableForm()"
+                  [(ngModel)]="username">
+              </div>
+
+              <!-- Token -->
+              <div class="form-group">
+                <div class="form-label-row">
+                  <label class="form-label" for="token">Personal Access Token</label>
+                  <button
+                    class="show-hide-btn"
+                    type="button"
+                    (click)="hideToken.set(!hideToken())">
+                    {{ hideToken() ? 'Show' : 'Hide' }}
+                  </button>
                 </div>
-                }
+                <input
+                  class="form-control input-block"
+                  [type]="hideToken() ? 'password' : 'text'"
+                  id="token"
+                  name="token"
+                  placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                  required
+                  [disabled]="disableForm()"
+                  [(ngModel)]="token">
+                <p class="note">Your token is processed in-memory only and never stored.</p>
+              </div>
 
-                <form (ngSubmit)="onSubmit()" autocomplete="off">
-                    <!-- Username -->
-                    <div class="form-group">
-                        <div class="form-group-header">
-                            <label for="username">GitHub Username</label>
-                        </div>
-                        <div class="form-group-body">
-                            <input class="form-control input-block" type="text" id="username" name="username"
-                                placeholder="e.g. octocat" required [disabled]="disableForm()" [(ngModel)]="username">
-                        </div>
-                    </div>
-
-                    <!-- Token -->
-                    <div class="form-group mt-3">
-                        <div class="form-group-header d-flex flex-justify-between flex-items-center">
-                            <label for="token">Personal Access Token</label>
-                            <button class="btn-link" type="button" (click)="hideToken.set(!hideToken())"
-                                style="color: var(--color-accent-fg); font-size: 12px; border: none; background: transparent; cursor: pointer; padding: 0;">
-                                {{ hideToken() ? 'Show' : 'Hide' }}
-                            </button>
-                        </div>
-                        <div class="form-group-body">
-                            <input class="form-control input-block" [type]="hideToken() ? 'password' : 'text'"
-                                id="token" name="token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" required
-                                [disabled]="disableForm()" [(ngModel)]="token">
-                        </div>
-                        <p class="note mt-1">Your token is processed in-memory only and never stored.</p>
-                    </div>
-
-                    <!-- Submit -->
-                    <div class="mt-4">
-                        <button class="btn btn-primary btn-block" type="submit"
-                            [disabled]="disableForm() || !validate()">
-                            @if (disableForm()) {
-                            <span octicon="sync" [size]="14" class="mr-2 anim-rotate"></span>
-                            } @else {
-                            <span octicon="repo" [size]="14" class="mr-2"></span>
-                            }
-                            Retrieve Repositories
-                        </button>
-                    </div>
-                </form>
-            </div>
+              <!-- Submit -->
+              <div class="form-group mb-0">
+                <button
+                  class="btn btn-primary btn-block"
+                  type="submit"
+                  [disabled]="disableForm() || !validate()">
+                  @if (disableForm()) {
+                    <span octicon="sync" [size]="14" class="anim-rotate"></span>
+                  } @else {
+                    <span octicon="repo" [size]="14"></span>
+                  }
+                  Retrieve Repositories
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
 
         <!-- Footer hint -->
-        <div class="auth-hint">
-            <p class="color-fg-muted">
-                Don't have a token?
-                <a href="#" (click)="activeTab.set('how-to'); $event.preventDefault();"
-                    style="color: var(--color-accent-fg);">
-                    Read the Setup Guide
-                </a>
-            </p>
-        </div>
-    </div>
+        <p class="auth-hint color-fg-muted">
+          Don't have a token?
+          <a
+            href="#"
+            class="auth-guide-link"
+            (click)="activeTab.set('how-to'); $event.preventDefault();">
+            Read the Setup Guide
+            <span octicon="arrow-right" [size]="12"></span>
+          </a>
+        </p>
+      </div>
     }
 
     @if (enableList()) {
-    <app-repo-list [repoList]="repoList()" (load)="pageLoader($event)" (refresh)="onSubmit()"></app-repo-list>
+      <app-repo-list [repoList]="repoList()" (load)="pageLoader($event)" (refresh)="onSubmit()"></app-repo-list>
     }
-    }
+  }
 
-    @if (activeTab() === 'how-to') {
+  @if (activeTab() === 'how-to') {
     <app-how-to></app-how-to>
-    }
+  }
 
-    @if (activeTab() === 'about') {
+  @if (activeTab() === 'about') {
     <app-about></app-about>
-    }
+  }
 </main>

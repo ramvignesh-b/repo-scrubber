@@ -14,7 +14,7 @@
   justify-content: flex-start;
   padding: 48px 16px 64px;
   min-height: calc(100vh - 60px);
-  gap: 16px;
+  gap: 12px;
 }
 
 .auth-hero {
@@ -22,13 +22,14 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: 6px;
+  margin-bottom: 4px;
 }
 
 .auth-hero-icon {
   color: var(--color-fg-default);
-  opacity: 0.9;
+  opacity: 0.85;
+  margin-bottom: 4px;
 }
 
 .auth-hero-title {
@@ -43,19 +44,69 @@
   font-size: 14px;
   color: var(--color-fg-muted);
   margin: 0;
-  max-width: 320px;
+  max-width: 340px;
+  line-height: 1.5;
 }
 
 .auth-box {
   width: 100%;
-  max-width: 450px;
+  max-width: 440px;
 }
 
-.auth-hint {
-  text-align: center;
+/* ================================================
+   Form labels — flat, consistent spacing
+   ================================================ */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
 
-  p {
-    margin: 0;
-    font-size: 13px;
-  }
+  &.mb-0 { margin-bottom: 0; }
+}
+
+.form-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-fg-default);
+  display: block;
+}
+
+.form-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .form-label { margin: 0; }
+}
+
+.show-hide-btn {
+  font-size: 12px;
+  color: var(--color-accent-fg);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+
+  &:hover { text-decoration: underline; }
+}
+
+/* ================================================
+   Auth footer hint
+   ================================================ */
+.auth-hint {
+  font-size: 13px;
+  margin: 0;
+  text-align: center;
+}
+
+.auth-guide-link {
+  color: var(--color-accent-fg);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  &:hover { text-decoration: underline; }
 }

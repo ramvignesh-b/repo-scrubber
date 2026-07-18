@@ -1,6 +1,8 @@
-import { Component, Output, EventEmitter, signal } from '@angular/core';
+import { Component, Output, EventEmitter, signal, input, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OcticonDirective } from '../shared/octicon.directive';
+
+type Tab = 'scrub' | 'how-to' | 'about';
 
 @Component({
     selector: 'app-navbar',
@@ -10,10 +12,23 @@ import { OcticonDirective } from '../shared/octicon.directive';
     styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent {
-    @Output() activeTab = new EventEmitter<'scrub' | 'how-to' | 'about'>();
-    activeId = signal<'scrub' | 'how-to' | 'about'>('scrub');
+    /** Parent can push the active tab in (e.g. from the "Read Setup Guide" link) */
+    selectedTab = input<Tab>('scrub');
 
-    setActive(tabId: 'scrub' | 'how-to' | 'about'): void {
+    /** Emits to parent when a tab button is clicked */
+    @Output() activeTab = new EventEmitter<Tab>();
+
+    /** Internal reactive state — stays in sync with selectedTab input */
+    activeId = signal<Tab>('scrub');
+
+    constructor() {
+        // Keep internal signal in sync whenever parent changes selectedTab
+        effect(() => {
+            this.activeId.set(this.selectedTab());
+        });
+    }
+
+    setActive(tabId: Tab): void {
         this.activeId.set(tabId);
         this.activeTab.emit(tabId);
     }
