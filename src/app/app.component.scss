@@ -1,5 +1,5 @@
 .main-content {
-  min-height: calc(100vh - 60px);
+  min-height: calc(100vh - 48px);
   background-color: var(--color-canvas-default);
   color: var(--color-fg-default);
 }
@@ -13,7 +13,7 @@
   align-items: center;
   justify-content: flex-start;
   padding: 48px 16px 64px;
-  min-height: calc(100vh - 60px);
+  min-height: calc(100vh - 48px);
   gap: 12px;
 }
 

@@ -186,9 +186,50 @@
   flex-direction: column;
   background-color: var(--color-canvas-overlay) !important;
   box-shadow: var(--color-shadow-extra-large);
+  border-radius: 6px;
+  overflow: hidden;
+
+  .Box-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px !important;
+    border-bottom: 1px solid var(--color-border-muted) !important;
+
+    .btn-octicon {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 0 !important;
+      height: 28px !important;
+      width: 28px !important;
+      margin: 0 !important;
+      color: var(--color-fg-muted) !important;
+      background: transparent !important;
+      border: 0 !important;
+      border-radius: 4px !important;
+      cursor: pointer;
+
+      &:hover {
+        color: var(--color-fg-default) !important;
+        background-color: var(--color-neutral-muted) !important;
+      }
+    }
+  }
 
   .Box-body {
+    padding: 16px !important;
     overflow-y: auto;
+  }
+
+  .Box-footer {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 8px !important;
+    padding: 16px !important;
+    background-color: var(--color-canvas-subtle) !important;
+    border-top: 1px solid var(--color-border-muted) !important;
   }
 }
 
