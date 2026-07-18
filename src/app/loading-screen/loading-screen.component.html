@@ -1,8 +1,6 @@
-<div *ngIf="show" class="position-absolute top-0 bg-info d-flex align-items-center justify-content-center bg-dark bg-gradient" id="loader">
-    <div class="text-center">
-        <h3 class="display-3 text-light">{{ message }}</h3>
-        <div class="spinner-border text-light mb-3" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-    </div>
+<div *ngIf="show" class="loading-overlay">
+  <div class="loading-content">
+    <mat-spinner color="accent" diameter="60"></mat-spinner>
+    <h3 class="loading-message">{{ message }}</h3>
+  </div>
 </div>
