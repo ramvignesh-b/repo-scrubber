@@ -39,22 +39,78 @@
         </div>
     </div>
 
-    <!-- Filters bar -->
     <div class="filters-bar mb-3">
         <div class="search-input-wrapper">
             <span octicon="search" [size]="16" class="search-icon"></span>
             <input class="form-control" type="search" placeholder="Search repositories…" [ngModel]="searchText()"
                 (ngModelChange)="searchText.set($event)" aria-label="Search repositories">
         </div>
-        <select class="form-select" [ngModel]="filterType()" (ngModelChange)="filterType.set($event)"
-            aria-label="Filter by type" style="max-width: 180px;">
-            <option value="all">All Types</option>
-            <option value="forked">Forked Only</option>
-            <option value="original">Original Only</option>
-            <option value="public">Public Only</option>
-            <option value="private">Private Only</option>
-        </select>
+        <div class="d-flex flex-wrap flex-items-center" style="gap: 12px;">
+            <!-- Dropdown Filter using native details/summary -->
+            <details class="dropdown details-reset details-overlay">
+                <summary class="btn btn-sm d-inline-flex flex-items-center" style="gap: 4px;">
+                    <span octicon="filter" [size]="14"></span>
+                    Filters
+                    @if (visibilityFilter() !== 'all' || typeFilter() !== 'all') {
+                    <span class="Counter">{{ (visibilityFilter() !== 'all' ? 1 : 0) + (typeFilter() !== 'all' ? 1 : 0)
+                        }}</span>
+                    }
+                    <span octicon="triangle-down" [size]="12"></span>
+                </summary>
+                <div class="dropdown-menu dropdown-menu-sw" style="min-width: 200px; padding: 8px 0;">
+                    <!-- Visibility Section -->
+                    <div class="dropdown-header"
+                        style="padding: 4px 16px 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-fg-muted);">
+                        Visibility</div>
+                    <label class="dropdown-item d-flex flex-items-center"
+                        style="gap: 8px; cursor: pointer; padding: 4px 16px;">
+                        <input type="checkbox" [checked]="visibilityFilter() === 'all'"
+                            (change)="visibilityFilter.set('all')">
+                        <span>All</span>
+                    </label>
+                    <label class="dropdown-item d-flex flex-items-center"
+                        style="gap: 8px; cursor: pointer; padding: 4px 16px;">
+                        <input type="checkbox" [checked]="visibilityFilter() === 'public'"
+                            (change)="visibilityFilter.set('public')">
+                        <span octicon="unlock" [size]="12"></span>
+                        <span>Public</span>
+                    </label>
+                    <label class="dropdown-item d-flex flex-items-center"
+                        style="gap: 8px; cursor: pointer; padding: 4px 16px;">
+                        <input type="checkbox" [checked]="visibilityFilter() === 'private'"
+                            (change)="visibilityFilter.set('private')">
+                        <span octicon="lock" [size]="12"></span>
+                        <span>Private</span>
+                    </label>
+                    <div class="dropdown-divider" style="margin: 8px 0;"></div>
+                    <!-- Type Section -->
+                    <div class="dropdown-header"
+                        style="padding: 4px 16px 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-fg-muted);">
+                        Type</div>
+                    <label class="dropdown-item d-flex flex-items-center"
+                        style="gap: 8px; cursor: pointer; padding: 4px 16px;">
+                        <input type="checkbox" [checked]="typeFilter() === 'all'" (change)="typeFilter.set('all')">
+                        <span>All</span>
+                    </label>
+                    <label class="dropdown-item d-flex flex-items-center"
+                        style="gap: 8px; cursor: pointer; padding: 4px 16px;">
+                        <input type="checkbox" [checked]="typeFilter() === 'original'"
+                            (change)="typeFilter.set('original')">
+                        <span octicon="repo" [size]="12"></span>
+                        <span>Sources</span>
+                    </label>
+                    <label class="dropdown-item d-flex flex-items-center"
+                        style="gap: 8px; cursor: pointer; padding: 4px 16px;">
+                        <input type="checkbox" [checked]="typeFilter() === 'forked'"
+                            (change)="typeFilter.set('forked')">
+                        <span octicon="repo-forked" [size]="12"></span>
+                        <span>Forks</span>
+                    </label>
+                </div>
+            </details>
+        </div>
     </div>
+
 
     <!-- Repository Box -->
     <div class="Box">

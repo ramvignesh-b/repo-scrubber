@@ -1,0 +1,149 @@
+{
+    "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+    "vcs": {
+        "enabled": true,
+        "clientKind": "git",
+        "useIgnoreFile": true
+    },
+    "files": {
+        "includes": [
+            "**/*.ts",
+            "**/*.js",
+            "**/*.json",
+            "**/*.css",
+            "**/*.scss",
+            "**/*.html",
+            "!**/*.spec.ts",
+            "!dist",
+            "!!.angular",
+            "!!node_modules",
+            "!!coverage",
+            "!!.nx"
+        ]
+    },
+    "formatter": {
+        "enabled": true,
+        "indentStyle": "space",
+        "indentWidth": 2,
+        "lineWidth": 100,
+        "delimiterSpacing": false
+    },
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "recommended": true,
+            "correctness": {
+                "noUnusedVariables": "warn"
+            },
+            "suspicious": {
+                "noExplicitAny": "warn"
+            },
+            "style": {
+                "useImportType": {
+                    "level": "error",
+                    "options": {
+                        "style": "separatedType"
+                    }
+                },
+                "noDefaultExport": "warn"
+            },
+            "a11y": {
+                "recommended": true,
+                "useValidAnchor": "off"
+            }
+        }
+    },
+    "assist": {
+        "actions": {
+            "source": {
+                "organizeImports": {
+                    "level": "on",
+                    "options": {
+                        "groups": [
+                            [
+                                ":NODE:",
+                                ":BUN:"
+                            ],
+                            ":BLANK_LINE:",
+                            [
+                                ":PACKAGE:",
+                                "!@angular/"
+                            ],
+                            ":BLANK_LINE:",
+                            "@angular/",
+                            ":BLANK_LINE:",
+                            [
+                                ":ALIAS:",
+                                ":PATH:"
+                            ]
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "javascript": {
+        "formatter": {
+            "quoteStyle": "single",
+            "semicolons": "asNeeded",
+            "trailingCommas": "es5",
+            "arrowParentheses": "asNeeded",
+            "jsxQuoteStyle": "double"
+        }
+    },
+    "css": {
+        "formatter": {
+            "enabled": true,
+            "indentStyle": "space",
+            "indentWidth": 2,
+            "quoteStyle": "double"
+        }
+    },
+    "html": {
+        "experimentalFullSupportEnabled": true,
+        "formatter": {
+            "indentStyle": "space",
+            "indentWidth": 2
+        },
+        "parser": {
+            "interpolation": true
+        }
+    },
+    "json": {
+        "formatter": {
+            "enabled": true,
+            "indentWidth": 2,
+            "lineWidth": 100
+        }
+    },
+    "overrides": [
+        {
+            "includes": [
+                "**/*.component.ts"
+            ],
+            "javascript": {
+                "formatter": {
+                    "jsxQuoteStyle": "single"
+                }
+            }
+        },
+        {
+            "includes": [
+                "**/*.spec.ts"
+            ],
+            "linter": {
+                "rules": {
+                    "correctness": {
+                        "noUnusedVariables": "off"
+                    },
+                    "suspicious": {
+                        "noExplicitAny": "off"
+                    },
+                    "a11y": {
+                        "useValidAnchor": "off"
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,8 +1,9 @@
-@if (show) {
-  <div class="loading-overlay">
+@if (show()) {
+<div class="loading-overlay">
     <div class="loading-content">
-      <span octicon="sync" [size]="48" class="anim-rotate" style="color: var(--color-accent-fg); display: inline-block;"></span>
-      <h3 class="loading-message">{{ message }}</h3>
+        <span octicon="sync" [size]="48" class="anim-rotate"
+            style="color: var(--color-accent-fg); display: inline-block;"></span>
+        <h3 class="loading-message">{{ message() }}</h3>
     </div>
-  </div>
+</div>
 }

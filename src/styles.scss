@@ -405,10 +405,10 @@ html, body {
   color: var(--color-attention-fg) !important;
 }
 
-.Label--warning {
-  background-color: var(--color-attention-subtle) !important;
-  border: 1px solid var(--color-attention-muted) !important;
-  color: var(--color-attention-fg) !important;
+.Label--info {
+  background-color: var(--color-accent-subtle) !important;
+  border: 1px solid var(--color-accent-muted) !important;
+  color: var(--color-accent-fg) !important;
 }
 
 /* ================================================
@@ -582,3 +582,47 @@ code {
   color: var(--color-fg-muted);
   margin-top: 4px;
 }
+
+/* ================================================
+   BtnGroup — Primer button grouping utility
+   ================================================ */
+.BtnGroup {
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.BtnGroup-item {
+  position: relative;
+  flex: 1 1 auto;
+  border-radius: 0 !important;
+  margin-right: -1px;
+  border: 1px solid var(--color-border-default) !important;
+  background-color: var(--color-btn-bg) !important;
+  color: var(--color-btn-text) !important;
+
+  &:first-child {
+    border-top-left-radius: 6px !important;
+    border-bottom-left-radius: 6px !important;
+  }
+
+  &:last-child {
+    border-top-right-radius: 6px !important;
+    border-bottom-right-radius: 6px !important;
+    margin-right: 0;
+  }
+
+  &:hover, &:focus, &.selected {
+    z-index: 1;
+  }
+
+  &:hover {
+    background-color: var(--color-btn-hover-bg) !important;
+  }
+
+  &.selected {
+    background-color: var(--color-accent-emphasis) !important;
+    color: var(--color-fg-on-emphasis) !important;
+    border-color: var(--color-accent-emphasis) !important;
+  }
+}
+

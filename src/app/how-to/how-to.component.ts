@@ -7,6 +7,6 @@ import { OcticonDirective } from '../shared/octicon.directive';
   standalone: true,
   imports: [CommonModule, OcticonDirective],
   templateUrl: './how-to.component.html',
-  styleUrls: ['./how-to.component.scss']
+  styleUrls: ['./how-to.component.scss'],
 })
 export class HowToComponent {}

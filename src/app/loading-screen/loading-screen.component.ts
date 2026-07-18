@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OcticonDirective } from '../shared/octicon.directive';
 
@@ -7,9 +7,9 @@ import { OcticonDirective } from '../shared/octicon.directive';
   standalone: true,
   imports: [CommonModule, OcticonDirective],
   templateUrl: './loading-screen.component.html',
-  styleUrls: ['./loading-screen.component.scss']
+  styleUrls: ['./loading-screen.component.scss'],
 })
 export class LoadingScreenComponent {
-  @Input() show: boolean = false;
-  @Input() message: string = '';
+  show = input<boolean>(false);
+  message = input<string>('');
 }
