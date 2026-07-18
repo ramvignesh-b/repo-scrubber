@@ -7,7 +7,7 @@ import { LoadingScreenComponent } from './loading-screen/loading-screen.componen
 import { RepoListComponent } from './repo-list/repo-list.component';
 import { HowToComponent } from './how-to/how-to.component';
 import { AboutComponent } from './about/about.component';
-import { ApiService } from './services/ApiService.service';
+import { ApiService, GitHubRepo } from './services/api.service';
 import { OcticonDirective } from './shared/octicon.directive';
 
 @Component({
@@ -32,7 +32,7 @@ export class AppComponent {
   username = signal('');
   token = signal('');
   enableList = signal(false);
-  repoList = signal<any[]>([]);
+  repoList = signal<GitHubRepo[]>([]);
   title = 'repo-scrubber';
   error = signal('');
   loadingScreen = signal(false);
@@ -47,24 +47,13 @@ export class AppComponent {
     this.activeTab.set(value);
   }
 
-  apiSuccess(data: any[]) {
+  apiSuccess(data: GitHubRepo[]) {
     if (!data || data.length === 0) {
       this.error.set('No repositories returned. Make sure the user owns repositories.');
       this.loadingScreen.set(false);
       return;
     }
-    const cleaned: any[] = [];
-    data.forEach((_repo) => {
-      cleaned.push({
-        id: _repo.id,
-        name: _repo.name,
-        url: _repo.html_url,
-        fork: _repo.fork,
-        private: _repo.private,
-        created_at: _repo.created_at,
-      });
-    });
-    this.repoList.set(cleaned);
+    this.repoList.set(data);
     this.loadingScreen.set(false);
     this.disableForm.set(true);
     this.enableList.set(true);

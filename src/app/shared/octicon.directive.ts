@@ -18,7 +18,19 @@ export class OcticonDirective {
       const colorVal = this.color();
       const sizeVal = this.size();
 
-      const iconObj = (octicons as any)[name];
+      const iconObj = (
+        octicons as unknown as Record<
+          string,
+          {
+            toSVG(options?: {
+              width?: number;
+              height?: number;
+              fill?: string;
+              class?: string;
+            }): string;
+          }
+        >
+      )[name];
       if (iconObj) {
         const svgString = iconObj.toSVG({
           width: sizeVal,

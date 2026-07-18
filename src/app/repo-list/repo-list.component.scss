@@ -1,15 +1,10 @@
-/* ================================================
-   Repo List Container
-   ================================================ */
 .repo-list-container {
   max-width: 900px;
   margin: 0 auto;
   padding: 24px 16px 64px;
 }
 
-/* ================================================
-   Flashes (toast notifications)
-   ================================================ */
+// Flashes (toast notifications)
 .flashes-container {
   position: fixed;
   top: 72px;
@@ -29,9 +24,26 @@
   }
 }
 
-/* ================================================
-   Search / Filter bar
-   ================================================ */
+.flash-close-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.6;
+  flex-shrink: 0;
+  margin-left: 4px;
+  transition: opacity 0.1s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+// Search / Filter bar
 .filters-bar {
   display: flex;
   gap: 8px;
@@ -60,9 +72,7 @@
   }
 }
 
-/* ================================================
-   Repo rows
-   ================================================ */
+// Repo rows
 .repo-rows {
   max-height: 60vh;
   height: 720px;
@@ -134,9 +144,7 @@
   }
 }
 
-/* ================================================
-   Blankslate
-   ================================================ */
+// Blankslate primer theme)
 .blankslate {
   text-align: center;
   padding: 48px 32px;
@@ -161,9 +169,7 @@
   }
 }
 
-/* ================================================
-   Confirmation Modal
-   ================================================ */
+// Confirmation Modal
 .confirm-backdrop {
   position: fixed;
   top: 0;
@@ -239,18 +245,14 @@
   overflow-y: auto;
 }
 
-/* ================================================
-   Label--danger (not in Primer by default)
-   ================================================ */
+// Label--danger (not in Primer by default)
 .Label--danger {
   background-color: var(--color-danger-subtle) !important;
   border: 1px solid var(--color-danger-muted) !important;
   color: var(--color-danger-fg) !important;
 }
 
-/* ================================================
-   Counter badge
-   ================================================ */
+// Counter badge
 .Counter {
   display: inline-flex;
   align-items: center;
@@ -270,9 +272,7 @@
   border-color: transparent;
 }
 
-/* ================================================
-   Subhead actions
-   ================================================ */
+// Subhead actions
 .Subhead {
   display: flex;
   align-items: center;

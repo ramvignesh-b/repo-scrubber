@@ -1,305 +1,514 @@
-<!-- Toast flash notifications -->
 @if (flashes().length > 0) {
-<div class="flashes-container" role="status" aria-live="polite">
+  <div class="flashes-container" role="status" aria-live="polite">
     @for (flash of flashes(); track flash) {
-    <div class="flash" [class.flash-success]="flash.type === 'success'" [class.flash-error]="flash.type === 'error'"
+      <div
+        class="flash"
+        [class.flash-success]="flash.type === 'success'"
+        [class.flash-error]="flash.type === 'error'"
         [class.flash-info]="flash.type === 'info'"
-        style="pointer-events: auto; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); padding: 12px 16px; border-radius: 6px;">
+        style="
+          pointer-events: auto;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+          padding: 12px 16px;
+          border-radius: 6px;
+        "
+      >
         @if (flash.type === 'success') {
-        <span octicon="check-circle" [size]="16" style="flex-shrink: 0;"></span>
+          <span octicon="check-circle" [size]="16" style="flex-shrink: 0"></span>
         } @else if (flash.type === 'info') {
-        <span octicon="info" [size]="16" style="flex-shrink: 0;"></span>
+          <span octicon="info" [size]="16" style="flex-shrink: 0"></span>
         } @else {
-        <span octicon="alert" [size]="16" style="flex-shrink: 0;"></span>
+          <span octicon="alert" [size]="16" style="flex-shrink: 0"></span>
         }
-        <div style="flex-grow: 1; font-size: 13px; line-height: 1.4;">{{ flash.message }}</div>
-        <button type="button" aria-label="Dismiss" (click)="dismissFlash(flash)"
-            style="display: inline-flex; align-items: center; justify-content: center; background: none; border: none; padding: 0; cursor: pointer; color: inherit; opacity: 0.6; flex-shrink: 0; margin-left: 4px;"
-            onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">
-            <span octicon="x" [size]="14"></span>
+        <div style="flex-grow: 1; font-size: 13px; line-height: 1.4">{{ flash.message }}</div>
+        <button
+          type="button"
+          aria-label="Dismiss"
+          (click)="dismissFlash(flash)"
+          class="flash-close-btn"
+        >
+          <span octicon="x" [size]="14"></span>
         </button>
-    </div>
+      </div>
     }
-</div>
+  </div>
 }
 
 <div class="repo-list-container">
-    <!-- Header row: title + action buttons -->
-    <div class="Subhead">
-        <div class="Subhead-heading d-flex flex-items-center" style="gap: 8px;">
-            <span octicon="repo" [size]="20" style="flex-shrink: 0;"></span>
-            <span style="white-space: nowrap;">Your Repositories</span>
-            <span class="Counter" title="{{ repoList().length }} total repositories" style="flex-shrink: 0;">{{
-                repoList().length
-                }}</span>
+  <div class="Subhead">
+    <div class="Subhead-heading d-flex flex-items-center" style="gap: 8px">
+      <span octicon="repo" [size]="20" style="flex-shrink: 0"></span>
+      <span style="white-space: nowrap">Your Repositories</span>
+      <span
+        class="Counter"
+        title="{{ repoList().length }} total repositories"
+        style="flex-shrink: 0"
+        >{{ repoList().length }}</span
+      >
+    </div>
+    <div class="Subhead-actions d-flex" style="gap: 8px; flex-shrink: 0">
+      <button
+        class="btn d-inline-flex flex-items-center"
+        type="button"
+        (click)="reset()"
+        title="Refresh repositories"
+        style="gap: 6px"
+      >
+        <span octicon="sync" [size]="14"></span>
+        Refresh
+      </button>
+      <button
+        class="btn btn-danger d-inline-flex flex-items-center"
+        type="button"
+        [disabled]="disabledDelete()"
+        (click)="onDeleteClick()"
+        style="gap: 6px"
+      >
+        <span octicon="trash" [size]="14"></span>
+        Delete Selected
+        @if (selectedRepos().size > 0) {
+          <span class="Counter Counter--primary ml-1">{{ selectedRepos().size }}</span>
+        }
+      </button>
+    </div>
+  </div>
+
+  <div class="filters-bar mb-3">
+    <div class="search-input-wrapper">
+      <span octicon="search" [size]="16" class="search-icon"></span>
+      <input
+        class="form-control"
+        type="search"
+        placeholder="Search repositories…"
+        [ngModel]="searchText()"
+        (ngModelChange)="searchText.set($event)"
+        aria-label="Search repositories"
+      />
+    </div>
+    <div class="d-flex flex-wrap flex-items-center" style="gap: 12px">
+      <details class="details-reset details-overlay d-inline-block" style="position: relative">
+        <summary
+          class="btn btn-sm d-inline-flex flex-items-center"
+          style="gap: 4px"
+          aria-haspopup="true"
+        >
+          <span octicon="filter" [size]="14"></span>
+          Filters
+          @if (visibilityFilter() !== 'all' || typeFilter() !== 'all') {
+            <span class="Counter">{{
+              (visibilityFilter() !== 'all' ? 1 : 0) + (typeFilter() !== 'all' ? 1 : 0)
+            }}</span>
+          }
+        </summary>
+        <div
+          class="SelectMenu"
+          role="menu"
+          tabindex="-1"
+          (click)="$event.stopPropagation()"
+          (keydown)="$event.stopPropagation()"
+          style="position: absolute; right: 0; z-index: 99; margin-top: 4px"
+        >
+          <div class="SelectMenu-modal" style="width: 220px">
+            <header class="SelectMenu-header" style="padding: 8px 16px">
+              <span class="SelectMenu-title" style="font-size: 12px">Filter repositories</span>
+            </header>
+            <div class="SelectMenu-list">
+              <div
+                class="SelectMenu-divider"
+                style="
+                  padding: 4px 16px;
+                  font-size: 10px;
+                  font-weight: 600;
+                  text-transform: uppercase;
+                "
+              >
+                Visibility
+              </div>
+              <label
+                class="SelectMenu-item d-flex flex-items-center"
+                style="cursor: pointer; gap: 8px; padding: 8px 16px; font-weight: normal"
+              >
+                <input
+                  type="checkbox"
+                  [checked]="visibilityFilter() === 'all'"
+                  (change)="setVisibilityFilter('all')"
+                />
+                <span>All</span>
+              </label>
+              <label
+                class="SelectMenu-item d-flex flex-items-center"
+                style="cursor: pointer; gap: 8px; padding: 8px 16px; font-weight: normal"
+              >
+                <input
+                  type="checkbox"
+                  [checked]="visibilityFilter() === 'public'"
+                  (change)="setVisibilityFilter('public')"
+                />
+                <span octicon="unlock" [size]="12"></span>
+                <span>Public</span>
+              </label>
+              <label
+                class="SelectMenu-item d-flex flex-items-center"
+                style="cursor: pointer; gap: 8px; padding: 8px 16px; font-weight: normal"
+              >
+                <input
+                  type="checkbox"
+                  [checked]="visibilityFilter() === 'private'"
+                  (change)="setVisibilityFilter('private')"
+                />
+                <span octicon="lock" [size]="12"></span>
+                <span>Private</span>
+              </label>
+              <div
+                class="SelectMenu-divider"
+                style="
+                  padding: 4px 16px;
+                  font-size: 10px;
+                  font-weight: 600;
+                  text-transform: uppercase;
+                "
+              >
+                Type
+              </div>
+              <label
+                class="SelectMenu-item d-flex flex-items-center"
+                style="cursor: pointer; gap: 8px; padding: 8px 16px; font-weight: normal"
+              >
+                <input
+                  type="checkbox"
+                  [checked]="typeFilter() === 'all'"
+                  (change)="setTypeFilter('all')"
+                />
+                <span>All</span>
+              </label>
+              <label
+                class="SelectMenu-item d-flex flex-items-center"
+                style="cursor: pointer; gap: 8px; padding: 8px 16px; font-weight: normal"
+              >
+                <input
+                  type="checkbox"
+                  [checked]="typeFilter() === 'original'"
+                  (change)="setTypeFilter('original')"
+                />
+                <span octicon="repo" [size]="12"></span>
+                <span>Sources</span>
+              </label>
+              <label
+                class="SelectMenu-item d-flex flex-items-center"
+                style="cursor: pointer; gap: 8px; padding: 8px 16px; font-weight: normal"
+              >
+                <input
+                  type="checkbox"
+                  [checked]="typeFilter() === 'forked'"
+                  (change)="setTypeFilter('forked')"
+                />
+                <span octicon="repo-forked" [size]="12"></span>
+                <span>Forks</span>
+              </label>
+            </div>
+          </div>
         </div>
-        <div class="Subhead-actions d-flex" style="gap: 8px; flex-shrink: 0">
-            <button class="btn d-inline-flex flex-items-center" type="button" (click)="reset()"
-                title="Refresh repositories" style="gap: 6px">
-                <span octicon="sync" [size]="14"></span>
-                Refresh
-            </button>
-            <button class="btn btn-danger d-inline-flex flex-items-center" type="button" [disabled]="disabledDelete()"
-                (click)="onDeleteClick()" style="gap: 6px">
-                <span octicon="trash" [size]="14"></span>
-                Delete Selected
-                @if (selectedRepos().size > 0) {
-                <span class="Counter Counter--primary ml-1">{{ selectedRepos().size }}</span>
+      </details>
+      <details
+        #sortDetails
+        class="details-reset details-overlay d-inline-block"
+        style="position: relative"
+      >
+        <summary
+          class="btn btn-sm d-inline-flex flex-items-center"
+          style="gap: 4px"
+          aria-haspopup="true"
+        >
+          <span>Sort: {{ sortBy() === 'name' ? 'Name' : 'Date' }}</span>
+          <span
+            [octicon]="sortDirection() === 'asc' ? 'arrow-up' : 'arrow-down'"
+            [size]="14"
+            style="position: relative; top: 3px"
+          ></span>
+        </summary>
+        <div
+          class="SelectMenu"
+          role="menu"
+          tabindex="-1"
+          (click)="$event.stopPropagation()"
+          (keydown)="$event.stopPropagation()"
+          style="position: absolute; right: 0; z-index: 99; margin-top: 4px"
+        >
+          <div class="SelectMenu-modal" style="width: 180px">
+            <header class="SelectMenu-header" style="padding: 8px 16px">
+              <span class="SelectMenu-title" style="font-size: 12px">Sort options</span>
+            </header>
+            <div class="SelectMenu-list">
+              <button
+                type="button"
+                class="SelectMenu-item"
+                (click)="toggleSort('name'); sortDetails.removeAttribute('open')"
+                style="
+                  width: 100%;
+                  border: none;
+                  background: transparent;
+                  text-align: left;
+                  cursor: pointer;
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  padding: 8px 16px;
+                "
+              >
+                <span
+                  [style.visibility]="sortBy() === 'name' ? 'visible' : 'hidden'"
+                  octicon="check"
+                  [size]="14"
+                  style="
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-shrink: 0;
+                    width: 14px;
+                    height: 14px;
+                  "
+                ></span>
+                @if (sortBy() === 'name') {
+                  <span
+                    [octicon]="sortDirection() === 'asc' ? 'arrow-up' : 'arrow-down'"
+                    [size]="14"
+                    class="color-fg-muted"
+                    style="
+                      display: inline-flex;
+                      align-items: center;
+                      justify-content: center;
+                      flex-shrink: 0;
+                      width: 14px;
+                      height: 14px;
+                    "
+                  ></span>
+                } @else {
+                  <span
+                    style="width: 14px; height: 14px; display: inline-block; flex-shrink: 0"
+                  ></span>
                 }
-            </button>
+                <span style="font-weight: normal; line-height: 1">Name</span>
+              </button>
+              <button
+                type="button"
+                class="SelectMenu-item"
+                (click)="toggleSort('date'); sortDetails.removeAttribute('open')"
+                style="
+                  width: 100%;
+                  border: none;
+                  background: transparent;
+                  text-align: left;
+                  cursor: pointer;
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  padding: 8px 16px;
+                "
+              >
+                <span
+                  [style.visibility]="sortBy() === 'date' ? 'visible' : 'hidden'"
+                  octicon="check"
+                  [size]="14"
+                  style="
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-shrink: 0;
+                    width: 14px;
+                    height: 14px;
+                  "
+                ></span>
+                @if (sortBy() === 'date') {
+                  <span
+                    [octicon]="sortDirection() === 'asc' ? 'arrow-up' : 'arrow-down'"
+                    [size]="14"
+                    class="color-fg-muted"
+                    style="
+                      display: inline-flex;
+                      align-items: center;
+                      justify-content: center;
+                      flex-shrink: 0;
+                      width: 14px;
+                      height: 14px;
+                    "
+                  ></span>
+                } @else {
+                  <span
+                    style="width: 14px; height: 14px; display: inline-block; flex-shrink: 0"
+                  ></span>
+                }
+                <span style="font-weight: normal; line-height: 1">Date Created</span>
+              </button>
+            </div>
+          </div>
         </div>
+      </details>
     </div>
-
-    <div class="filters-bar mb-3">
-        <div class="search-input-wrapper">
-            <span octicon="search" [size]="16" class="search-icon"></span>
-            <input class="form-control" type="search" placeholder="Search repositories…" [ngModel]="searchText()"
-                (ngModelChange)="searchText.set($event)" aria-label="Search repositories" />
-        </div>
-        <div class="d-flex flex-wrap flex-items-center" style="gap: 12px">
-            <details class="details-reset details-overlay d-inline-block" style="position: relative;">
-                <summary class="btn btn-sm d-inline-flex flex-items-center" style="gap: 4px;" aria-haspopup="true">
-                    <span octicon="filter" [size]="14"></span>
-                    Filters
-                    @if (visibilityFilter() !== 'all' || typeFilter() !== 'all') {
-                    <span class="Counter">{{
-                        (visibilityFilter() !== 'all' ? 1 : 0) + (typeFilter() !== 'all' ? 1 : 0)
-                        }}</span>
-                    }
-                </summary>
-                <div class="SelectMenu" (click)="$event.stopPropagation()"
-                    style="position: absolute; right: 0; z-index: 99; margin-top: 4px;">
-                    <div class="SelectMenu-modal" style="width: 220px;">
-                        <header class="SelectMenu-header" style="padding: 8px 16px;">
-                            <span class="SelectMenu-title" style="font-size: 12px;">Filter repositories</span>
-                        </header>
-                        <div class="SelectMenu-list">
-                            <!-- Visibility Section -->
-                            <div class="SelectMenu-divider"
-                                style="padding: 4px 16px; font-size: 10px; font-weight: 600; text-transform: uppercase;">
-                                Visibility</div>
-                            <label class="SelectMenu-item d-flex flex-items-center"
-                                style="cursor: pointer; gap: 8px; padding: 8px 16px; font-weight: normal;">
-                                <input type="checkbox" [checked]="visibilityFilter() === 'all'"
-                                    (change)="setVisibilityFilter('all')" />
-                                <span>All</span>
-                            </label>
-                            <label class="SelectMenu-item d-flex flex-items-center"
-                                style="cursor: pointer; gap: 8px; padding: 8px 16px; font-weight: normal;">
-                                <input type="checkbox" [checked]="visibilityFilter() === 'public'"
-                                    (change)="setVisibilityFilter('public')" />
-                                <span octicon="unlock" [size]="12"></span>
-                                <span>Public</span>
-                            </label>
-                            <label class="SelectMenu-item d-flex flex-items-center"
-                                style="cursor: pointer; gap: 8px; padding: 8px 16px; font-weight: normal;">
-                                <input type="checkbox" [checked]="visibilityFilter() === 'private'"
-                                    (change)="setVisibilityFilter('private')" />
-                                <span octicon="lock" [size]="12"></span>
-                                <span>Private</span>
-                            </label>
-
-                            <!-- Type Section -->
-                            <div class="SelectMenu-divider"
-                                style="padding: 4px 16px; font-size: 10px; font-weight: 600; text-transform: uppercase;">
-                                Type</div>
-                            <label class="SelectMenu-item d-flex flex-items-center"
-                                style="cursor: pointer; gap: 8px; padding: 8px 16px; font-weight: normal;">
-                                <input type="checkbox" [checked]="typeFilter() === 'all'"
-                                    (change)="setTypeFilter('all')" />
-                                <span>All</span>
-                            </label>
-                            <label class="SelectMenu-item d-flex flex-items-center"
-                                style="cursor: pointer; gap: 8px; padding: 8px 16px; font-weight: normal;">
-                                <input type="checkbox" [checked]="typeFilter() === 'original'"
-                                    (change)="setTypeFilter('original')" />
-                                <span octicon="repo" [size]="12"></span>
-                                <span>Sources</span>
-                            </label>
-                            <label class="SelectMenu-item d-flex flex-items-center"
-                                style="cursor: pointer; gap: 8px; padding: 8px 16px; font-weight: normal;">
-                                <input type="checkbox" [checked]="typeFilter() === 'forked'"
-                                    (change)="setTypeFilter('forked')" />
-                                <span octicon="repo-forked" [size]="12"></span>
-                                <span>Forks</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </details>
-
-            <!-- Sort Dropdown -->
-            <details #sortDetails class="details-reset details-overlay d-inline-block" style="position: relative;">
-                <summary class="btn btn-sm d-inline-flex flex-items-center" style="gap: 4px;" aria-haspopup="true">
-                    <span>Sort: {{ sortBy() === 'name' ? 'Name' : 'Date' }}</span>
-                    <span [octicon]="sortDirection() === 'asc' ? 'arrow-up' : 'arrow-down'" [size]="14"
-                        style="position: relative; top: 3px;"></span>
-                </summary>
-                <div class="SelectMenu" (click)="$event.stopPropagation()"
-                    style="position: absolute; right: 0; z-index: 99; margin-top: 4px;">
-                    <div class="SelectMenu-modal" style="width: 180px;">
-                        <header class="SelectMenu-header" style="padding: 8px 16px;">
-                            <span class="SelectMenu-title" style="font-size: 12px;">Sort options</span>
-                        </header>
-                        <div class="SelectMenu-list">
-                            <button type="button" class="SelectMenu-item"
-                                (click)="toggleSort('name'); sortDetails.removeAttribute('open')"
-                                style="width: 100%; border: none; background: transparent; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 8px 16px;">
-                                <span [style.visibility]="sortBy() === 'name' ? 'visible' : 'hidden'" octicon="check"
-                                    [size]="14"
-                                    style="display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 14px; height: 14px;"></span>
-                                @if (sortBy() === 'name') {
-                                <span [octicon]="sortDirection() === 'asc' ? 'arrow-up' : 'arrow-down'" [size]="14"
-                                    class="color-fg-muted"
-                                    style="display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 14px; height: 14px;"></span>
-                                } @else {
-                                <span style="width: 14px; height: 14px; display: inline-block; flex-shrink: 0;"></span>
-                                }
-                                <span style="font-weight: normal; line-height: 1;">Name</span>
-                            </button>
-                            <button type="button" class="SelectMenu-item"
-                                (click)="toggleSort('date'); sortDetails.removeAttribute('open')"
-                                style="width: 100%; border: none; background: transparent; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 8px 16px;">
-                                <span [style.visibility]="sortBy() === 'date' ? 'visible' : 'hidden'" octicon="check"
-                                    [size]="14"
-                                    style="display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 14px; height: 14px;"></span>
-                                @if (sortBy() === 'date') {
-                                <span [octicon]="sortDirection() === 'asc' ? 'arrow-up' : 'arrow-down'" [size]="14"
-                                    class="color-fg-muted"
-                                    style="display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 14px; height: 14px;"></span>
-                                } @else {
-                                <span style="width: 14px; height: 14px; display: inline-block; flex-shrink: 0;"></span>
-                                }
-                                <span style="font-weight: normal; line-height: 1;">Date Created</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </details>
-        </div>
+  </div>
+  <div class="Box">
+    <div class="Box-header">
+      <label class="d-flex flex-items-center" style="gap: 10px; cursor: pointer; margin: 0">
+        <input
+          type="checkbox"
+          [checked]="isAllSelected()"
+          [indeterminate]="isSomeSelected()"
+          (change)="toggleSelectAll($event)"
+          aria-label="Select all repositories"
+        />
+        <span class="f6 color-fg-default" style="font-weight: 600">
+          Select all {{ filteredRepoList().length }} repositor{{
+            filteredRepoList().length === 1 ? 'y' : 'ies'
+          }}
+        </span>
+      </label>
     </div>
+    <div class="repo-rows">
+      @for (repo of filteredRepoList(); track repo.id) {
+        <div class="Box-row repo-row" [class.selected-row]="selectedRepos().has(repo.name)">
+          <label
+            class="d-flex flex-items-center width-full"
+            style="cursor: pointer; gap: 10px; margin: 0"
+          >
+            <input
+              type="checkbox"
+              [checked]="selectedRepos().has(repo.name)"
+              (change)="toggleSelect(repo.name)"
+              [attr.aria-label]="'Select ' + repo.name"
+            />
 
-    <!-- Repository Box -->
-    <div class="Box">
-        <!-- Select-all header -->
-        <div class="Box-header">
-            <label class="d-flex flex-items-center" style="gap: 10px; cursor: pointer; margin: 0">
-                <input type="checkbox" [checked]="isAllSelected()" [indeterminate]="isSomeSelected()"
-                    (change)="toggleSelectAll($event)" aria-label="Select all repositories" />
-                <span class="f6 color-fg-default" style="font-weight: 600">
-                    Select all {{ filteredRepoList().length }} repositor{{
-                    filteredRepoList().length === 1 ? 'y' : 'ies'
-                    }}
+            <span
+              class="repo-type-icon Label"
+              [class.Label--secondary]="!repo.private"
+              [class.Label--warning]="repo.private"
+              [class.Label--info]="repo.fork"
+              [title]="repo.fork ? 'Forked' : repo.private ? 'Private' : 'Public'"
+            >
+              @if (repo.fork) {
+                <span octicon="repo-forked" [size]="12"></span>
+              } @else if (repo.private) {
+                <span octicon="lock" [size]="12"></span>
+              } @else {
+                <span octicon="unlock" [size]="12"></span>
+              }
+            </span>
+
+            <div class="repo-info">
+              <div class="repo-name-row">
+                <a
+                  [href]="repo.html_url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="repo-name-link"
+                  (click)="$event.stopPropagation()"
+                >
+                  {{ repo.name }}
+                </a>
+              </div>
+            </div>
+
+            <div class="repo-meta ml-auto d-flex flex-items-center" style="gap: 12px">
+              @if (repo.created_at) {
+                <span class="f6 color-fg-muted Label Label--secondary" style="white-space: nowrap">
+                  {{ repo.created_at | date: 'MMM d, y' }}
                 </span>
-            </label>
-        </div>
-
-        <!-- Repo rows -->
-        <div class="repo-rows">
-            @for (repo of filteredRepoList(); track repo.id) {
-            <div class="Box-row repo-row" [class.selected-row]="selectedRepos().has(repo.name)">
-                <label class="d-flex flex-items-center width-full" style="cursor: pointer; gap: 10px; margin: 0">
-                    <input type="checkbox" [checked]="selectedRepos().has(repo.name)" (change)="toggleSelect(repo.name)"
-                        [attr.aria-label]="'Select ' + repo.name" />
-
-                    <span class="repo-type-icon Label" [class.Label--secondary]="!repo.private"
-                        [class.Label--warning]="repo.private" [class.Label--info]="repo.fork"
-                        [title]="repo.fork ? 'Forked' : (repo.private ? 'Private' : 'Public')">
-                        @if (repo.fork) {
-                        <span octicon="repo-forked" [size]="12"></span>
-                        } @else if (repo.private) {
-                        <span octicon="lock" [size]="12"></span>
-                        } @else {
-                        <span octicon="unlock" [size]="12"></span>
-                        }
-                    </span>
-
-                    <div class="repo-info">
-                        <div class="repo-name-row">
-                            <a [href]="repo.url" target="_blank" rel="noopener noreferrer" class="repo-name-link"
-                                (click)="$event.stopPropagation()">
-                                {{ repo.name }}
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="repo-meta ml-auto d-flex flex-items-center" style="gap: 12px">
-                        @if (repo.created_at) {
-                        <span class="f6 color-fg-muted Label Label--secondary" style="white-space: nowrap">
-                            {{ repo.created_at | date: 'MMM d, y' }}
-                        </span>
-                        }
-                        <div class="repo-actions">
-                            <a [href]="repo.url" target="_blank" rel="noopener noreferrer" class="repo-external-link"
-                                title="Open on GitHub" (click)="$event.stopPropagation()">
-                                <span octicon="link-external" [size]="14"></span>
-                            </a>
-                        </div>
-                    </div>
-                </label>
+              }
+              <div class="repo-actions">
+                <a
+                  [href]="repo.html_url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="repo-external-link"
+                  title="Open on GitHub"
+                  (click)="$event.stopPropagation()"
+                >
+                  <span octicon="link-external" [size]="14"></span>
+                </a>
+              </div>
             </div>
-            } @empty {
-            <div class="blankslate">
-                <span octicon="search" [size]="32" class="blankslate-icon"></span>
-                <h3 class="blankslate-heading">No repositories found</h3>
-                <p class="blankslate-description">
-                    Try adjusting your search or filter to find what you're looking for.
-                </p>
-            </div>
-            }
+          </label>
         </div>
+      } @empty {
+        <div class="blankslate">
+          <span octicon="search" [size]="32" class="blankslate-icon"></span>
+          <h3 class="blankslate-heading">No repositories found</h3>
+          <p class="blankslate-description">
+            Try adjusting your search or filter to find what you're looking for.
+          </p>
+        </div>
+      }
     </div>
+  </div>
 </div>
 
 <!-- Confirmation Modal -->
 @if (showConfirmModal()) {
-<div class="confirm-backdrop" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+  <div class="confirm-backdrop" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
     <div class="Box confirm-dialog">
-        <div class="Box-header d-flex flex-items-center flex-justify-between">
-            <h3 class="Box-title" id="confirm-title"
-                style="color: var(--color-danger-fg); display: flex; align-items: center; gap: 6px">
-                <span octicon="trash" [size]="16"></span>
-                Confirm Bulk Deletion
-            </h3>
-            <button class="btn-octicon d-inline-flex flex-items-center flex-justify-center" type="button"
-                (click)="onConfirmClose()" aria-label="Close dialog">
-                <span octicon="x" [size]="16"></span>
-            </button>
-        </div>
+      <div class="Box-header d-flex flex-items-center flex-justify-between">
+        <h3
+          class="Box-title"
+          id="confirm-title"
+          style="color: var(--color-danger-fg); display: flex; align-items: center; gap: 6px"
+        >
+          <span octicon="trash" [size]="16"></span>
+          Confirm Bulk Deletion
+        </h3>
+        <button
+          class="btn-octicon d-inline-flex flex-items-center flex-justify-center"
+          type="button"
+          (click)="onConfirmClose()"
+          aria-label="Close dialog"
+        >
+          <span octicon="x" [size]="16"></span>
+        </button>
+      </div>
 
-        <div class="Box-body">
-            <p class="mb-3">
-                Are you sure you want to <strong>permanently delete </strong>
-                <strong>{{ selectedRepos().size }}</strong> selected
-                {{ selectedRepos().size === 1 ? 'repository' : 'repositories' }}?
-            </p>
-
-            <!-- List of repos to delete -->
-            <div class="Box mb-3 repo-delete-list">
-                @for (repo of selectedRepos(); track repo) {
-                <div class="Box-row d-flex flex-items-center" style="gap: 8px; padding: 8px 12px">
-                    <span octicon="repo" [size]="14" style="color: var(--color-fg-muted); flex-shrink: 0"></span>
-                    <span style="font-weight: 600; word-break: break-all; color: var(--color-fg-default)">{{ repo
-                        }}</span>
-                </div>
-                }
+      <div class="Box-body">
+        <p class="mb-3">
+          Are you sure you want to <strong>permanently delete </strong>
+          <strong>{{ selectedRepos().size }}</strong> selected
+          {{ selectedRepos().size === 1 ? 'repository' : 'repositories' }}?
+        </p>
+        <div class="Box mb-3 repo-delete-list">
+          @for (repo of selectedRepos(); track repo) {
+            <div class="Box-row d-flex flex-items-center" style="gap: 8px; padding: 8px 12px">
+              <span
+                octicon="repo"
+                [size]="14"
+                style="color: var(--color-fg-muted); flex-shrink: 0"
+              ></span>
+              <span
+                style="font-weight: 600; word-break: break-all; color: var(--color-fg-default)"
+                >{{ repo }}</span
+              >
             </div>
-
-            <div class="flash flash-error" role="alert">
-                <span octicon="alert" [size]="16"></span>
-                <span>This action is <strong>irreversible</strong> and will delete these repositories
-                    forever.</span>
-            </div>
+          }
         </div>
 
-        <div class="Box-footer d-flex flex-items-center flex-justify-end" style="gap: 8px">
-            <button class="btn" type="button" (click)="onConfirmClose()">Cancel</button>
-            <button class="btn btn-danger d-inline-flex flex-items-center" type="button" (click)="onConfirmDelete()"
-                style="gap: 6px">
-                <span octicon="trash" [size]="14"></span>
-                Permanently Delete
-            </button>
+        <div class="flash flash-error" role="alert">
+          <span octicon="alert" [size]="16"></span>
+          <span
+            >This action is <strong>irreversible</strong> and will delete these repositories
+            forever.</span
+          >
         </div>
+      </div>
+
+      <div class="Box-footer d-flex flex-items-center flex-justify-end" style="gap: 8px">
+        <button class="btn" type="button" (click)="onConfirmClose()">Cancel</button>
+        <button
+          class="btn btn-danger d-inline-flex flex-items-center"
+          type="button"
+          (click)="onConfirmDelete()"
+          style="gap: 6px"
+        >
+          <span octicon="trash" [size]="14"></span>
+          Permanently Delete
+        </button>
+      </div>
     </div>
-</div>
+  </div>
 }

@@ -102,10 +102,7 @@ body {
   line-height: 1.5;
 }
 
-/* ================================================
-   Octicon host element — always inline-flex so the
-   injected SVG is vertically centered in any context
-   ================================================ */
+// HACK: Octicon host element — always inline-flex so the injected SVG is vertically centered in any context
 [octicon] {
   display: inline-flex !important;
   align-items: center !important;
@@ -120,9 +117,7 @@ body {
   }
 }
 
-/* ================================================
-   Scrollbar
-   ================================================ */
+// Scrollbar
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -138,9 +133,7 @@ body {
   background: #484f58;
 }
 
-/* ================================================
-   Header / Navbar override for dark mode
-   ================================================ */
+// Header / Navbar override for dark mode
 .Header {
   background-color: var(--color-header-bg) !important;
   border-bottom: 1px solid var(--color-header-divider) !important;
@@ -170,9 +163,7 @@ body {
   }
 }
 
-/* ================================================
-   UnderlineNav styling
-   ================================================ */
+// UnderlineNav styling
 .UnderlineNav {
   display: flex !important;
   border-bottom: none !important;
@@ -217,9 +208,7 @@ body {
   }
 }
 
-/* ================================================
-   Box / Card
-   ================================================ */
+// Box / Card
 .Box {
   border-radius: 6px !important;
   border: 1px solid var(--color-border-default) !important;
@@ -255,9 +244,7 @@ body {
   }
 }
 
-/* ================================================
-   Form inputs
-   ================================================ */
+// Form inputs
 .form-control {
   background-color: var(--color-canvas-inset) !important;
   border: 1px solid var(--color-border-default) !important;
@@ -301,9 +288,7 @@ body {
   }
 }
 
-/* ================================================
-   Buttons
-   ================================================ */
+// Buttons
 .btn {
   background-color: var(--color-btn-bg) !important;
   border: 1px solid var(--color-btn-border) !important;
@@ -366,9 +351,7 @@ body {
   }
 }
 
-/* ================================================
-   Flash alerts
-   ================================================ */
+// Flash alerts
 .flash {
   padding: 12px 16px !important;
   border-radius: 6px !important;
@@ -403,9 +386,7 @@ body {
   color: var(--color-accent-fg) !important;
 }
 
-/* ================================================
-   Labels / Badges
-   ================================================ */
+// Labels / Badges
 .Label {
   border-radius: 2em !important;
   font-size: 12px !important;
@@ -444,9 +425,7 @@ body {
   color: var(--color-accent-fg) !important;
 }
 
-/* ================================================
-   Timeline (How To page)
-   ================================================ */
+// Timeline (How To page)
 .Timeline {
   display: flex;
   flex-direction: column;
@@ -499,9 +478,7 @@ body {
   padding-top: 8px;
 }
 
-/* ================================================
-   Subhead
-   ================================================ */
+// Subhead
 .Subhead {
   padding-bottom: 12px !important;
   margin-bottom: 24px !important;
@@ -521,9 +498,7 @@ body {
   font-size: 14px !important;
 }
 
-/* ================================================
-   Blankslate
-   ================================================ */
+// Blankslate
 .blankslate {
   display: flex;
   flex-direction: column;
@@ -533,9 +508,7 @@ body {
   background-color: transparent !important;
 }
 
-/* ================================================
-   Loading overlay
-   ================================================ */
+// Loading overlay
 .loading-overlay {
   position: fixed;
   top: 0;
@@ -582,20 +555,16 @@ body {
     transform: rotate(0deg);
   }
   to {
-    transform: rotate(-360deg);
+    transform: rotate(360deg);
   }
 }
 
-/* ================================================
-   Main content
-   ================================================ */
+// Main content
 .main-content {
   min-height: calc(100vh - 48px);
 }
 
-/* ================================================
-   Misc utilities
-   ================================================ */
+// Misc utilities
 code {
   font-family:
     ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
@@ -622,9 +591,7 @@ code {
   margin-top: 4px;
 }
 
-/* ================================================
-   BtnGroup — Primer button grouping utility
-   ================================================ */
+// BtnGroup — Primer button grouping utility
 .BtnGroup {
   display: inline-flex;
   vertical-align: middle;

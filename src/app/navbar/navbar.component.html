@@ -1,23 +1,38 @@
 <header class="Header d-flex flex-justify-center">
-    <div class="Header-item">
-        <nav class="UnderlineNav" aria-label="Main Navigation">
-            <div class="UnderlineNav-body">
-                <button class="UnderlineNav-item" [class.selected]="activeId() === 'scrub'" (click)="setActive('scrub')"
-                    type="button" aria-label="Scrub repositories">
-                    <span octicon="git-pull-request" [size]="16"></span>
-                    Scrub
-                </button>
-                <button class="UnderlineNav-item" [class.selected]="activeId() === 'how-to'"
-                    (click)="setActive('how-to')" type="button" aria-label="Setup guide">
-                    <span octicon="book" [size]="16"></span>
-                    How To?
-                </button>
-                <button class="UnderlineNav-item" [class.selected]="activeId() === 'about'" (click)="setActive('about')"
-                    type="button" aria-label="About Repo Scrubber">
-                    <span octicon="info" [size]="16"></span>
-                    About
-                </button>
-            </div>
-        </nav>
-    </div>
+  <div class="Header-item">
+    <nav class="UnderlineNav" aria-label="Main Navigation">
+      <div class="UnderlineNav-body">
+        <button
+          class="UnderlineNav-item"
+          [class.selected]="activeId() === 'scrub'"
+          (click)="setActive('scrub')"
+          type="button"
+          aria-label="Scrub repositories"
+        >
+          <span octicon="git-pull-request" [size]="16"></span>
+          Scrub
+        </button>
+        <button
+          class="UnderlineNav-item"
+          [class.selected]="activeId() === 'how-to'"
+          (click)="setActive('how-to')"
+          type="button"
+          aria-label="Setup guide"
+        >
+          <span octicon="book" [size]="16"></span>
+          How To?
+        </button>
+        <button
+          class="UnderlineNav-item"
+          [class.selected]="activeId() === 'about'"
+          (click)="setActive('about')"
+          type="button"
+          aria-label="About Repo Scrubber"
+        >
+          <span octicon="info" [size]="16"></span>
+          About
+        </button>
+      </div>
+    </nav>
+  </div>
 </header>

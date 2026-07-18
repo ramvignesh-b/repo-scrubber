@@ -1,15 +1,7 @@
-import {
-  Component,
-  input,
-  output,
-  signal,
-  computed,
-  inject,
-  CUSTOM_ELEMENTS_SCHEMA,
-} from '@angular/core';
+import { Component, input, output, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ApiService } from '../services/ApiService.service';
+import { ApiService, GitHubRepo } from '../services/api.service';
 import { OcticonDirective } from '../shared/octicon.directive';
 
 @Component({
@@ -18,12 +10,11 @@ import { OcticonDirective } from '../shared/octicon.directive';
   imports: [CommonModule, FormsModule, OcticonDirective],
   templateUrl: './repo-list.component.html',
   styleUrls: ['./repo-list.component.scss'],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class RepoListComponent {
   private readonly apiService = inject(ApiService);
 
-  repoList = input<any[]>([]);
+  repoList = input<GitHubRepo[]>([]);
   loadList = output<boolean>();
   refresh = output<void>();
 
@@ -39,13 +30,12 @@ export class RepoListComponent {
   filteredRepoList = computed(() => {
     let list = this.repoList();
 
-    // 1. Text search
     const search = this.searchText().trim().toLowerCase();
     if (search) {
       list = list.filter((repo) => repo.name.toLowerCase().includes(search));
     }
 
-    // 2. Visibility filter
+    // Visibility filter
     const visibility = this.visibilityFilter();
     if (visibility === 'public') {
       list = list.filter((repo) => !repo.private);
@@ -53,7 +43,7 @@ export class RepoListComponent {
       list = list.filter((repo) => repo.private);
     }
 
-    // 3. Type filter
+    // Type filter
     const type = this.typeFilter();
     if (type === 'forked') {
       list = list.filter((repo) => repo.fork);
@@ -61,7 +51,7 @@ export class RepoListComponent {
       list = list.filter((repo) => !repo.fork);
     }
 
-    // 4. Sort
+    // Sort
     const field = this.sortBy();
     const direction = this.sortDirection();
     list = [...list].sort((a, b) => {
@@ -102,8 +92,8 @@ export class RepoListComponent {
     this.selectedRepos.set(current);
   }
 
-  toggleSelectAll(event: any): void {
-    const checked = event.target.checked;
+  toggleSelectAll(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
     const current = new Set<string>();
     if (checked) {
       this.filteredRepoList().forEach((repo) => {

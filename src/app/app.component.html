@@ -4,9 +4,7 @@
 <main class="main-content">
   @if (activeTab() === 'scrub') {
     @if (!enableList()) {
-      <!-- Auth screen centered layout -->
       <div class="auth-screen">
-        <!-- Hero heading -->
         <div class="auth-hero">
           <span octicon="mark-github" [size]="44" class="auth-hero-icon"></span>
           <h1 class="auth-hero-title">GitHub Authentication</h1>
@@ -14,11 +12,8 @@
             Enter your GitHub username and a Personal Access Token to retrieve your repositories.
           </p>
         </div>
-
-        <!-- Auth Box (no header — just the form in a clean box) -->
         <div class="Box auth-box">
           <div class="Box-body">
-            <!-- Error flash -->
             @if (error()) {
               <div class="flash flash-error mb-3" role="alert">
                 <span octicon="alert" [size]="16"></span>
@@ -27,7 +22,6 @@
             }
 
             <form (ngSubmit)="onSubmit()" autocomplete="off">
-              <!-- Username -->
               <div class="form-group">
                 <label class="form-label" for="username">GitHub Username</label>
                 <input
@@ -41,8 +35,6 @@
                   [(ngModel)]="username"
                 />
               </div>
-
-              <!-- Token -->
               <div class="form-group">
                 <div class="form-label-row">
                   <label class="form-label" for="token">Personal Access Token</label>
@@ -62,8 +54,6 @@
                 />
                 <p class="note">Your token is processed in-memory only and never stored.</p>
               </div>
-
-              <!-- Submit -->
               <div class="form-group mb-0">
                 <button
                   class="btn btn-primary btn-block"
@@ -71,9 +61,27 @@
                   [disabled]="disableForm() || !validate()"
                 >
                   @if (disableForm()) {
-                    <svg class="anim-rotate" width="14" height="14" viewBox="0 0 16 16" fill="none" style="vertical-align: middle;">
-                      <circle cx="8" cy="8" r="7" stroke="rgba(255, 255, 255, 0.2)" stroke-width="2" />
-                      <path d="M15 8a7 7 0 0 1-7 7" stroke="#ffffff" stroke-width="2" stroke-linecap="round" />
+                    <svg
+                      class="anim-rotate"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      style="vertical-align: middle"
+                    >
+                      <circle
+                        cx="8"
+                        cy="8"
+                        r="7"
+                        stroke="rgba(255, 255, 255, 0.2)"
+                        stroke-width="2"
+                      />
+                      <path
+                        d="M15 8a7 7 0 0 1-7 7"
+                        stroke="#ffffff"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
                     </svg>
                   } @else {
                     <span octicon="repo" [size]="14"></span>
@@ -84,8 +92,6 @@
             </form>
           </div>
         </div>
-
-        <!-- Footer hint -->
         <p class="auth-hint color-fg-muted">
           Don't have a token?
           <a

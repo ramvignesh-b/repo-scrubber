@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, signal, input, effect } from '@angular/core';
+import { Component, signal, input, effect, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OcticonDirective } from '../shared/octicon.directive';
 
@@ -16,7 +16,7 @@ export class NavbarComponent {
   selectedTab = input<Tab>('scrub');
 
   /** Emits to parent when a tab button is clicked */
-  @Output() activeTab = new EventEmitter<Tab>();
+  activeTab = output<Tab>();
 
   /** Internal reactive state — stays in sync with selectedTab input */
   activeId = signal<Tab>('scrub');

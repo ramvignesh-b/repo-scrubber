@@ -4,9 +4,6 @@
   color: var(--color-fg-default);
 }
 
-/* ================================================
-   Auth Screen
-   ================================================ */
 .auth-screen {
   display: flex;
   flex-direction: column;
@@ -53,9 +50,6 @@
   max-width: 440px;
 }
 
-/* ================================================
-   Form labels — flat, consistent spacing
-   ================================================ */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -98,9 +92,6 @@
   }
 }
 
-/* ================================================
-   Auth footer hint
-   ================================================ */
 .auth-hint {
   font-size: 13px;
   margin: 0;
