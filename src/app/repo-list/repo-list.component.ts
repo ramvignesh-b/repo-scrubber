@@ -19,7 +19,7 @@ export class RepoListComponent {
     refresh = output<void>();
 
     searchText = signal('');
-    filterType = signal<'all' | 'forked' | 'original'>('all');
+    filterType = signal<'all' | 'forked' | 'original' | 'public' | 'private'>('all');
     selectedRepos = signal<Set<string>>(new Set());
     showConfirmModal = signal(false);
     flashes = signal<{ message: string, type: 'success' | 'error' }[]>([]);
@@ -35,6 +35,10 @@ export class RepoListComponent {
             list = list.filter(repo => repo.fork);
         } else if (type === 'original') {
             list = list.filter(repo => !repo.fork);
+        } else if (type === 'public') {
+            list = list.filter(repo => !repo.private);
+        } else if (type === 'private') {
+            list = list.filter(repo => repo.private);
         }
         return list;
     });

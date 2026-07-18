@@ -60,7 +60,8 @@ export class AppComponent {
                 "name": _repo.name,
                 "url": _repo.html_url,
                 "fork": _repo.fork,
-                "private": _repo.private
+                "private": _repo.private,
+                "created_at": _repo.created_at
             });
         });
         this.repoList.set(cleaned);

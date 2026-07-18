@@ -187,7 +187,7 @@ html, body {
   transition: color 0.1s ease, border-color 0.1s ease;
   margin-bottom: -1px;
   white-space: nowrap;
-  
+
   &:hover {
     color: var(--color-fg-default) !important;
     border-bottom-color: var(--color-border-default) !important;
@@ -320,6 +320,12 @@ html, body {
   &:hover:not([disabled]) {
     background-color: var(--color-btn-danger-hover-bg) !important;
   }
+
+  .Counter {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    border-color: transparent !important;
+  }
 }
 
 .btn-outline {
@@ -393,6 +399,18 @@ html, body {
   color: var(--color-success-fg) !important;
 }
 
+.Label--warning {
+  background-color: var(--color-attention-subtle) !important;
+  border: 1px solid var(--color-attention-muted) !important;
+  color: var(--color-attention-fg) !important;
+}
+
+.Label--warning {
+  background-color: var(--color-attention-subtle) !important;
+  border: 1px solid var(--color-attention-muted) !important;
+  color: var(--color-attention-fg) !important;
+}
+
 /* ================================================
    Timeline (How To page)
    ================================================ */
@@ -409,7 +427,7 @@ html, body {
   position: relative;
   padding: 16px 0;
   margin: 0 !important;
-  
+
   &::before {
     content: '';
     position: absolute;
