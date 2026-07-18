@@ -24,7 +24,7 @@ export class RepoListComponent {
   private readonly apiService = inject(ApiService);
 
   repoList = input<any[]>([]);
-  load = output<boolean>();
+  loadList = output<boolean>();
   refresh = output<void>();
 
   searchText = signal('');
@@ -119,7 +119,7 @@ export class RepoListComponent {
   }
 
   performDeletion(repos: string[]): void {
-    this.load.emit(true);
+    this.loadList.emit(true);
     let completedCount = 0;
     let successCount = 0;
     let failCount = 0;
@@ -144,7 +144,7 @@ export class RepoListComponent {
   checkProgress(total: number, completed: number, success: number, fail: number): void {
     if (completed === total) {
       setTimeout(() => {
-        this.load.emit(false);
+        this.loadList.emit(false);
         this.showFlash(`Scrubbing complete. Success: ${success}, Failed: ${fail}`, 'success');
         this.reset();
       }, 1000);
