@@ -1,28 +1,95 @@
-<app-loading-screen [show]="loadingScreen" [message]="loadMessage">Loading...</app-loading-screen>
-<app-navbar (activeTab)="onActive($event)"></app-navbar>
-<ng-container *ngIf=" activeTab==='scrub'">
-    <div class=" container-sm">
-        <h1 class="display-1 text-center">Repo Scrubber</h1>
-        <div *ngIf="error" class="alert alert-danger" role="alert">
-            <strong>Error!</strong> {{ error }}
+<app-loading-screen [show]="loadingScreen()" [message]="loadMessage()"></app-loading-screen>
+<app-navbar [selectedTab]="activeTab()" (activeTab)="onActive($event)"></app-navbar>
+
+<main class="main-content">
+    @if (activeTab() === 'scrub') {
+    @if (!enableList()) {
+    <div class="auth-screen">
+        <div class="auth-hero">
+            <span octicon="mark-github" [size]="44" class="auth-hero-icon"></span>
+            <h1 class="auth-hero-title">GitHub Authentication</h1>
+            <p class="auth-hero-subtitle">
+                Enter your GitHub username and a Personal Access Token to retrieve your repositories.
+            </p>
         </div>
-        <form (ngSubmit)="onSubmit()" class="form">
-            <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="username" [(ngModel)]="username" name="username" required
-                    placeholder="Username" [disabled]="disableForm" (ngModelChange)="inputChange($event)">
-                <label for="username">Username</label>
+        <div class="Box auth-box">
+            <div class="Box-body">
+                @if (error()) {
+                <div class="flash flash-error mb-3" role="alert">
+                    <span octicon="alert" [size]="16"></span>
+                    <span>{{ error() }}</span>
+                </div>
+                }
+
+                <form (ngSubmit)="onSubmit()" autocomplete="off">
+                    <div class="form-group">
+                        <label class="form-label" for="username">GitHub Username</label>
+                        <input class="form-control input-block" type="text" id="username" name="username"
+                            placeholder="e.g. octocat" required [disabled]="disableForm()" [(ngModel)]="username" />
+                    </div>
+                    <div class="form-group">
+                        <div class="form-label-row">
+                            <label class="form-label" for="token">Personal Access Token</label>
+                            <button class="show-hide-btn" type="button" (click)="hideToken.set(!hideToken())">
+                                {{ hideToken() ? 'Show' : 'Hide' }}
+                            </button>
+                        </div>
+                        <input class="form-control input-block" [type]="hideToken() ? 'password' : 'text'" id="token"
+                            name="token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" required [disabled]="disableForm()"
+                            [(ngModel)]="token" />
+                        <p class="note">Your token is processed in-memory only and never stored.</p>
+                    </div>
+                    <div class="form-group mb-0">
+                        <button class="btn btn-primary btn-block" type="submit"
+                            [disabled]="disableForm() || !validate()">
+                            @if (disableForm()) {
+                            <svg class="anim-rotate" width="14" height="14" viewBox="0 0 16 16" fill="none"
+                                style="vertical-align: middle">
+                                <circle cx="8" cy="8" r="7" stroke="rgba(255, 255, 255, 0.2)" stroke-width="2" />
+                                <path d="M15 8a7 7 0 0 1-7 7" stroke="#ffffff" stroke-width="2"
+                                    stroke-linecap="round" />
+                            </svg>
+                            } @else {
+                            <span octicon="repo" [size]="14"></span>
+                            }
+                            Retrieve Repositories
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="token" [(ngModel)]="token" required name="token"
-                    placeholder="Token" [disabled]="disableForm" (ngModelChange)="inputChange($event)">
-                <label for="token">Token</label>
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-success" [disabled]="disableForm || !validate">Get Data</button>
-            </div>
-        </form>
+        </div>
+        <p class="auth-hint color-fg-muted">
+            Don't have a token?
+            <a href="#" class="auth-guide-link" (click)="activeTab.set('how-to'); $event.preventDefault()">
+                Read the Setup Guide
+                <span octicon="arrow-right" [size]="12"></span>
+            </a>
+        </p>
     </div>
-    <app-repo-list *ngIf="enableList" [repoList]="repoList" (load)="pageLoader($event)"></app-repo-list>
-</ng-container>
-<app-how-to *ngIf="activeTab === 'how-to'"></app-how-to>
-<app-about *ngIf="activeTab === 'about'"></app-about>
+    }
+
+    @if (enableList()) {
+    <app-repo-list [repoList]="repoList()" (loadList)="pageLoader($event)" (refresh)="onSubmit()"></app-repo-list>
+    }
+    }
+
+    @if (activeTab() === 'how-to') {
+    <app-how-to></app-how-to>
+    }
+
+    @if (activeTab() === 'about') {
+    <app-about></app-about>
+    }
+</main>
+
+<footer class="app-footer">
+    <div class="footer-container">
+        <span>© 2026 Repo Scrubber. Not affiliated with GitHub.</span>
+        <span>
+            Built by
+            <a href="https://ramvignesh.dev" target="_blank" rel="noopener noreferrer">
+                ramvignesh-b
+            </a>
+        </span>
+    </div>
+</footer>

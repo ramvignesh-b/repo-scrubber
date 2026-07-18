@@ -1,118 +1,208 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { ApiService } from '../services/ApiService.service';
+import { Component, input, output, signal, computed, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { ApiService, GitHubRepo } from '../services/api.service';
+import { OcticonDirective } from '../shared/octicon.directive';
 
 @Component({
-    selector: 'app-repo-list',
-    templateUrl: './repo-list.component.html',
-    styleUrls: ['./repo-list.component.scss']
+  selector: 'app-repo-list',
+  standalone: true,
+  imports: [CommonModule, FormsModule, OcticonDirective],
+  templateUrl: './repo-list.component.html',
+  styleUrls: ['./repo-list.component.scss'],
 })
-export class RepoListComponent implements OnInit {
-    @Input() repoList: any[] = [];
-    @Output() load: EventEmitter<boolean> = new EventEmitter<boolean>();
-    repoListOG: any[] = [];
-    toDelete: any = [];
-    disabled: boolean = true;
-    selected: string = 'all';
+export class RepoListComponent {
+  private readonly apiService = inject(ApiService);
 
-    constructor(
-        private readonly apiService: ApiService
-    ) { }
+  repoList = input<GitHubRepo[]>([]);
+  loadList = output<boolean>();
+  refresh = output<void>();
 
-    ngOnInit(): void {
-        this.repoListOG = this.repoList;
+  searchText = signal('');
+  visibilityFilter = signal<'all' | 'public' | 'private'>('all');
+  typeFilter = signal<'all' | 'original' | 'forked'>('all');
+  sortBy = signal<'name' | 'date'>('name');
+  sortDirection = signal<'asc' | 'desc'>('asc');
+  selectedRepos = signal<Set<string>>(new Set());
+  showConfirmModal = signal(false);
+  flashes = signal<{ message: string; type: 'success' | 'error' | 'info' }[]>([]);
+
+  filteredRepoList = computed(() => {
+    let list = this.repoList();
+
+    const search = this.searchText().trim().toLowerCase();
+    if (search) {
+      list = list.filter((repo) => repo.name.toLowerCase().includes(search));
     }
 
-    toastIt(repo: string | null, error?: 'error'): void {
-        const toastDiv = document.querySelector('#toastItems');
-        const newToast = document.createElement('div');
-        const message: string = error ? 'could not be deleted!' : 'was deleted successfully!'
-        newToast.className = `toast align-items-center ${error ? 'bg-danger' : 'bg-success'} show top-0 end-0`;
-        newToast.setAttribute('role', 'alert');
-        newToast.setAttribute('aria-live', 'assertive');
-        newToast.setAttribute('aria-atomic', 'true');
-        newToast.setAttribute('data-bs-autohide', 'true');
-        newToast.setAttribute('data-bs-animation', 'true');
-        const flexDiv = document.createElement('div');
-        flexDiv.className = "d-flex";
-        const toastBody = document.createElement('div');
-        toastBody.className = "toast-body text-light";
-        toastBody.innerHTML = `<strong>${repo}<strong> ${message}`;
-        const closeBtn = document.createElement('button');
-        closeBtn.className = "btn-close me-2 m-auto";
-        closeBtn.setAttribute('data-bs-dismiss', 'toast');
-        closeBtn.setAttribute('aria-label', 'close');
-        flexDiv.appendChild(toastBody);
-        flexDiv.appendChild(closeBtn);
-        newToast.appendChild(flexDiv);
-        toastDiv?.appendChild(newToast);
-        setTimeout(() => {
-            newToast.classList.remove('show');
-        }, 6000);
+    // Visibility filter
+    const visibility = this.visibilityFilter();
+    if (visibility === 'public') {
+      list = list.filter((repo) => !repo.private);
+    } else if (visibility === 'private') {
+      list = list.filter((repo) => repo.private);
     }
 
-    onChange(event: any) {
-        this.disabled = (document.querySelectorAll('input[type="checkbox"]:checked').length) ? false : true;
+    // Type filter
+    const type = this.typeFilter();
+    if (type === 'forked') {
+      list = list.filter((repo) => repo.fork);
+    } else if (type === 'original') {
+      list = list.filter((repo) => !repo.fork);
     }
 
-    onDeleteClick(event?: any): void{
-        const deleteList = document.querySelectorAll('input[type="checkbox"]:checked');
-        this.toDelete = [];
-        Array.from(deleteList).forEach(repo => this.toDelete.push(repo.getAttribute('name')))
-    }
+    // Sort
+    const field = this.sortBy();
+    const direction = this.sortDirection();
+    list = [...list].sort((a, b) => {
+      let comparison = 0;
+      if (field === 'name') {
+        comparison = a.name.localeCompare(b.name);
+      } else if (field === 'date') {
+        const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+        const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+        comparison = dateA - dateB;
+      }
+      return direction === 'asc' ? comparison : -comparison;
+    });
 
-    onDelete(): void {
-        const deleteList = document.querySelectorAll('input[type="checkbox"]:checked');
-        this.loadScreen(true);
-        Array.from(deleteList).forEach(repo => this.apiService.deleteRepo(repo.getAttribute('name')).subscribe((data => this.toastIt(repo.getAttribute('name'))), (error) => this.toastIt(repo.getAttribute('name'), 'error')));
-        setTimeout(() => {
-            this.reset();
-            this.loadScreen(false);
-        }, 3000);
-    }
+    return list;
+  });
 
-    resetCheckbox(): void {
-        const checkBoxes = document.querySelectorAll('input[type="checkbox"]:checked') as NodeListOf<HTMLInputElement>;
-        Array.from(checkBoxes).forEach((checkbox) => {
-            checkbox.checked = false;
-        });
-    }
+  disabledDelete = computed(() => this.selectedRepos().size === 0);
 
-    reset(): void {
-        this.selected = "all";
-        this.resetCheckbox();
-        this.repoList = [];
-        this.apiService.getRepoList().subscribe((data: any) => data.forEach((_repo: any) => {
-            this.repoList.push({
-                "id": _repo.id,
-                "name": _repo.name,
-                "url": _repo.html_url,
-                "fork": _repo.fork,
-                "private": _repo.private
-            })
-            this.repoListOG = this.repoList;
-        }));
-    }
+  isAllSelected = computed(() => {
+    const filtered = this.filteredRepoList();
+    if (filtered.length === 0) return false;
+    return filtered.every((repo) => this.selectedRepos().has(repo.name));
+  });
 
-    loadScreen(value: boolean) {
-        this.load.emit(value);
-    }
+  isSomeSelected = computed(() => {
+    const selectedCount = this.selectedRepos().size;
+    return selectedCount > 0 && !this.isAllSelected();
+  });
 
-    onFilter(event: any): void {
-        this.resetCheckbox();
-        switch (event.target.value) {
-            case 'filterForked':
-                this.repoList = this.repoListOG.filter((repo: any) => {
-                    return repo.fork;
-                });
-                break;
-            case 'filterOriginal':
-                this.repoList = this.repoListOG.filter((repo: any) => {
-                    return !repo.fork;
-                })
-                break;
-            default:
-                this.repoList = this.repoListOG;
-                break;
-        }
+  toggleSelect(name: string): void {
+    const current = new Set(this.selectedRepos());
+    if (current.has(name)) {
+      current.delete(name);
+    } else {
+      current.add(name);
     }
+    this.selectedRepos.set(current);
+  }
+
+  toggleSelectAll(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    const current = new Set<string>();
+    if (checked) {
+      this.filteredRepoList().forEach((repo) => {
+        current.add(repo.name);
+      });
+    }
+    this.selectedRepos.set(current);
+  }
+
+  setVisibilityFilter(value: 'all' | 'public' | 'private'): void {
+    if (value === 'all') {
+      this.visibilityFilter.set('all');
+    } else {
+      if (this.visibilityFilter() === value) {
+        this.visibilityFilter.set('all');
+      } else {
+        this.visibilityFilter.set(value);
+      }
+    }
+  }
+
+  setTypeFilter(value: 'all' | 'original' | 'forked'): void {
+    if (value === 'all') {
+      this.typeFilter.set('all');
+    } else {
+      if (this.typeFilter() === value) {
+        this.typeFilter.set('all');
+      } else {
+        this.typeFilter.set(value);
+      }
+    }
+  }
+
+  showFlash(message: string, type: 'success' | 'error' | 'info'): void {
+    const newFlash = { message, type };
+    this.flashes.set([...this.flashes(), newFlash]);
+    setTimeout(() => {
+      this.flashes.set(this.flashes().filter((f) => f !== newFlash));
+    }, 5000);
+  }
+
+  dismissFlash(flash: { message: string; type: 'success' | 'error' | 'info' }): void {
+    this.flashes.set(this.flashes().filter((f) => f !== flash));
+  }
+
+  onDeleteClick(): void {
+    this.showConfirmModal.set(true);
+  }
+
+  onConfirmClose(): void {
+    this.showConfirmModal.set(false);
+  }
+
+  onConfirmDelete(): void {
+    this.showConfirmModal.set(false);
+    const reposToDelete = Array.from(this.selectedRepos());
+    this.performDeletion(reposToDelete);
+  }
+
+  performDeletion(repos: string[]): void {
+    this.loadList.emit(true);
+    let completedCount = 0;
+    let successCount = 0;
+    let failCount = 0;
+
+    repos.forEach((repo) => {
+      this.apiService.deleteRepo(repo).subscribe({
+        next: () => {
+          successCount++;
+          this.showFlash(`Successfully deleted ${repo}`, 'success');
+          this.checkProgress(repos.length, ++completedCount, successCount, failCount);
+        },
+        error: (err) => {
+          failCount++;
+          const errMsg = err?.error?.message ? `: ${err.error.message}` : '';
+          this.showFlash(`Failed to delete ${repo}${errMsg}`, 'error');
+          console.error(err);
+          this.checkProgress(repos.length, ++completedCount, successCount, failCount);
+        },
+      });
+    });
+  }
+
+  checkProgress(total: number, completed: number, success: number, fail: number): void {
+    if (completed === total) {
+      setTimeout(() => {
+        this.loadList.emit(false);
+        this.showFlash(`Scrubbing complete. Success: ${success}, Failed: ${fail}`, 'info');
+        this.reset();
+      }, 1000);
+    }
+  }
+
+  toggleSort(field: 'name' | 'date'): void {
+    if (this.sortBy() === field) {
+      this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
+    } else {
+      this.sortBy.set(field);
+      this.sortDirection.set('asc');
+    }
+  }
+
+  reset(): void {
+    this.searchText.set('');
+    this.visibilityFilter.set('all');
+    this.typeFilter.set('all');
+    this.sortBy.set('name');
+    this.sortDirection.set('asc');
+    this.selectedRepos.set(new Set());
+    this.refresh.emit();
+  }
 }

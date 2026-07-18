@@ -1,20 +1,35 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, signal, input, effect, output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { OcticonDirective } from '../shared/octicon.directive';
+
+type Tab = 'scrub' | 'how-to' | 'about';
 
 @Component({
-    selector: 'app-navbar',
-    templateUrl: './navbar.component.html',
-    styleUrls: ['./navbar.component.scss']
+  selector: 'app-navbar',
+  standalone: true,
+  imports: [CommonModule, OcticonDirective],
+  templateUrl: './navbar.component.html',
+  styleUrls: ['./navbar.component.scss'],
 })
-export class NavbarComponent implements OnInit {
-    @Output() activeTab: EventEmitter<string> = new EventEmitter<string>();
-    constructor() { }
+export class NavbarComponent {
+  /** Parent can push the active tab in (e.g. from the "Read Setup Guide" link) */
+  selectedTab = input<Tab>('scrub');
 
-    ngOnInit(): void {
-    }
+  /** Emits to parent when a tab button is clicked */
+  activeTab = output<Tab>();
 
-    onActive(event: any): void {
-        Array.from(document.querySelectorAll('.nav-link')).forEach(link => link.classList.remove('active'))
-        event.target.classList.add('active');
-        this.activeTab.emit(event.target.id)
-    }
+  /** Internal reactive state — stays in sync with selectedTab input */
+  activeId = signal<Tab>('scrub');
+
+  constructor() {
+    // Keep internal signal in sync whenever parent changes selectedTab
+    effect(() => {
+      this.activeId.set(this.selectedTab());
+    });
+  }
+
+  setActive(tabId: Tab): void {
+    this.activeId.set(tabId);
+    this.activeTab.emit(tabId);
+  }
 }

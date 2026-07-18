@@ -1,15 +1,38 @@
-<nav class="navbar navbar-expand bg-dark navbar-dark">
-    <div class="container-fluid d-flex justify-content-center">
-        <ul class="navbar-nav gap-3">
-            <li class="nav-item">
-                <a class="nav-link" href="#" (click)="onActive($event)" id="scrub">Scrub</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" (click)="onActive($event)" id="how-to">How To?</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" (click)="onActive($event)" id="about">About</a>
-            </li>
-        </ul>
-    </div>
-</nav>
+<header class="Header d-flex flex-justify-center">
+  <div class="Header-item">
+    <nav class="UnderlineNav" aria-label="Main Navigation">
+      <div class="UnderlineNav-body">
+        <button
+          class="UnderlineNav-item"
+          [class.selected]="activeId() === 'scrub'"
+          (click)="setActive('scrub')"
+          type="button"
+          aria-label="Scrub repositories"
+        >
+          <span octicon="git-pull-request" [size]="16"></span>
+          Scrub
+        </button>
+        <button
+          class="UnderlineNav-item"
+          [class.selected]="activeId() === 'how-to'"
+          (click)="setActive('how-to')"
+          type="button"
+          aria-label="Setup guide"
+        >
+          <span octicon="book" [size]="16"></span>
+          How To?
+        </button>
+        <button
+          class="UnderlineNav-item"
+          [class.selected]="activeId() === 'about'"
+          (click)="setActive('about')"
+          type="button"
+          aria-label="About Repo Scrubber"
+        >
+          <span octicon="info" [size]="16"></span>
+          About
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
