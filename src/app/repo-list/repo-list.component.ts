@@ -1,106 +1,95 @@
-import { Component, Input, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, input, output, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule, MatSelectionList } from '@angular/material/list';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-
 import { ApiService } from '../services/ApiService.service';
-import { ConfirmDialogComponent } from './confirm-dialog.component';
 
 @Component({
     selector: 'app-repo-list',
     standalone: true,
-    imports: [
-        CommonModule,
-        FormsModule,
-        MatCardModule,
-        MatButtonModule,
-        MatIconModule,
-        MatListModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-        MatDialogModule,
-        MatSnackBarModule
-    ],
+    imports: [CommonModule, FormsModule],
     templateUrl: './repo-list.component.html',
     styleUrls: ['./repo-list.component.scss']
 })
-export class RepoListComponent implements OnInit {
-    @Input() repoList: any[] = [];
-    @Output() load: EventEmitter<boolean> = new EventEmitter<boolean>();
-    @ViewChild('repoListSelection') repoListSelection!: MatSelectionList;
+export class RepoListComponent {
+    private readonly apiService = inject(ApiService);
 
-    repoListOG: any[] = [];
-    filteredRepoList: any[] = [];
-    searchText: string = '';
-    filterType: 'all' | 'forked' | 'original' = 'all';
-    disabledDelete: boolean = true;
+    repoList = input<any[]>([]);
+    load = output<boolean>();
+    refresh = output<void>();
 
-    constructor(
-        private readonly apiService: ApiService,
-        private readonly dialog: MatDialog,
-        private readonly snackBar: MatSnackBar
-    ) { }
+    searchText = signal('');
+    filterType = signal<'all' | 'forked' | 'original'>('all');
+    selectedRepos = signal<Set<string>>(new Set());
+    showConfirmModal = signal(false);
+    flashes = signal<{ message: string, type: 'success' | 'error' }[]>([]);
 
-    ngOnInit(): void {
-        this.repoListOG = this.repoList;
-        this.applyFilters();
-    }
-
-    applyFilters(): void {
-        let list = this.repoListOG;
-
-        // Apply text filter
-        if (this.searchText.trim() !== '') {
-            const query = this.searchText.toLowerCase();
-            list = list.filter(repo => repo.name.toLowerCase().includes(query));
+    filteredRepoList = computed(() => {
+        let list = this.repoList();
+        const search = this.searchText().trim().toLowerCase();
+        if (search) {
+            list = list.filter(repo => repo.name.toLowerCase().includes(search));
         }
-
-        // Apply category filter
-        if (this.filterType === 'forked') {
+        const type = this.filterType();
+        if (type === 'forked') {
             list = list.filter(repo => repo.fork);
-        } else if (this.filterType === 'original') {
+        } else if (type === 'original') {
             list = list.filter(repo => !repo.fork);
         }
+        return list;
+    });
 
-        this.filteredRepoList = list;
-        setTimeout(() => this.updateDeleteButtonState());
-    }
+    disabledDelete = computed(() => this.selectedRepos().size === 0);
 
-    onSelectionChange(): void {
-        this.updateDeleteButtonState();
-    }
+    isAllSelected = computed(() => {
+        const filtered = this.filteredRepoList();
+        if (filtered.length === 0) return false;
+        return filtered.every(repo => this.selectedRepos().has(repo.name));
+    });
 
-    updateDeleteButtonState(): void {
-        if (!this.repoListSelection) {
-            this.disabledDelete = true;
-            return;
+    isSomeSelected = computed(() => {
+        const selectedCount = this.selectedRepos().size;
+        return selectedCount > 0 && !this.isAllSelected();
+    });
+
+    toggleSelect(name: string): void {
+        const current = new Set(this.selectedRepos());
+        if (current.has(name)) {
+            current.delete(name);
+        } else {
+            current.add(name);
         }
-        this.disabledDelete = this.repoListSelection.selectedOptions.selected.length === 0;
+        this.selectedRepos.set(current);
+    }
+
+    toggleSelectAll(event: any): void {
+        const checked = event.target.checked;
+        const current = new Set<string>();
+        if (checked) {
+            this.filteredRepoList().forEach(repo => current.add(repo.name));
+        }
+        this.selectedRepos.set(current);
+    }
+
+    showFlash(message: string, type: 'success' | 'error'): void {
+        const newFlash = { message, type };
+        this.flashes.set([...this.flashes(), newFlash]);
+        setTimeout(() => {
+            this.flashes.set(this.flashes().filter(f => f !== newFlash));
+        }, 5000);
     }
 
     onDeleteClick(): void {
-        const selectedRepos = this.repoListSelection.selectedOptions.selected.map(opt => opt.value);
-        
-        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            width: '450px',
-            data: { repos: selectedRepos },
-            disableClose: true
-        });
+        this.showConfirmModal.set(true);
+    }
 
-        dialogRef.afterClosed().subscribe(confirmed => {
-            if (confirmed) {
-                this.performDeletion(selectedRepos);
-            }
-        });
+    onConfirmClose(): void {
+        this.showConfirmModal.set(false);
+    }
+
+    onConfirmDelete(): void {
+        this.showConfirmModal.set(false);
+        const reposArray = Array.from(this.selectedRepos());
+        this.performDeletion(reposArray);
     }
 
     performDeletion(repos: string[]): void {
@@ -113,16 +102,12 @@ export class RepoListComponent implements OnInit {
             this.apiService.deleteRepo(repo).subscribe({
                 next: () => {
                     successCount++;
-                    this.snackBar.open(`Successfully deleted ${repo}`, 'Dismiss', {
-                        duration: 3000
-                    });
+                    this.showFlash(`Successfully deleted ${repo}`, 'success');
                     this.checkProgress(repos.length, ++completedCount, successCount, failCount);
                 },
                 error: (err) => {
                     failCount++;
-                    this.snackBar.open(`Failed to delete ${repo}`, 'Dismiss', {
-                        duration: 4000
-                    });
+                    this.showFlash(`Failed to delete ${repo}`, 'error');
                     console.error(err);
                     this.checkProgress(repos.length, ++completedCount, successCount, failCount);
                 }
@@ -134,40 +119,16 @@ export class RepoListComponent implements OnInit {
         if (completed === total) {
             setTimeout(() => {
                 this.load.emit(false);
-                this.snackBar.open(`Scrubbing complete. Success: ${success}, Failed: ${fail}`, 'OK', {
-                    duration: 5000
-                });
+                this.showFlash(`Scrubbing complete. Success: ${success}, Failed: ${fail}`, 'success');
                 this.reset();
             }, 1000);
         }
     }
 
     reset(): void {
-        this.repoList = [];
-        this.filteredRepoList = [];
-        this.searchText = '';
-        this.filterType = 'all';
-        this.disabledDelete = true;
-        
-        this.apiService.getRepoList().subscribe({
-            next: (data: any) => {
-                this.repoList = [];
-                data.forEach((_repo: any) => {
-                    this.repoList.push({
-                        "id": _repo.id,
-                        "name": _repo.name,
-                        "url": _repo.html_url,
-                        "fork": _repo.fork,
-                        "private": _repo.private
-                    });
-                });
-                this.repoListOG = this.repoList;
-                this.applyFilters();
-            },
-            error: (err) => {
-                this.snackBar.open('Failed to refresh repository list.', 'Retry', { duration: 5000 })
-                    .onAction().subscribe(() => this.reset());
-            }
-        });
+        this.searchText.set('');
+        this.filterType.set('all');
+        this.selectedRepos.set(new Set());
+        this.refresh.emit();
     }
 }

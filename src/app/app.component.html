@@ -73,7 +73,7 @@
     }
 
     @if (enableList()) {
-      <app-repo-list [repoList]="repoList()" (load)="pageLoader($event)"></app-repo-list>
+      <app-repo-list [repoList]="repoList()" (load)="pageLoader($event)" (refresh)="onSubmit()"></app-repo-list>
     }
   }
 
