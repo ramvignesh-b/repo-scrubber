@@ -9,8 +9,8 @@ import { expand, reduce, EMPTY } from 'rxjs';
 export class ApiService {
     private readonly http = inject(HttpClient);
 
-    token: string = '';
-    username: string = '';
+    token = '';
+    username = '';
 
     gitApi = 'https://api.github.com/';
 

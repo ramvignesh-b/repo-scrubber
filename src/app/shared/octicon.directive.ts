@@ -3,11 +3,11 @@ import * as octicons from '@primer/octicons';
 
 @Directive({
   selector: '[octicon]',
-  standalone: true
+  standalone: true,
 })
 export class OcticonDirective {
   private readonly el = inject(ElementRef);
-  
+
   octicon = input.required<string>();
   color = input<string>();
   size = input<number>(16);
@@ -24,7 +24,7 @@ export class OcticonDirective {
           width: sizeVal,
           height: sizeVal,
           fill: colorVal || 'currentColor',
-          class: `octicon octicon-${name}`
+          class: `octicon octicon-${name}`,
         });
         this.el.nativeElement.innerHTML = svgString;
       }
