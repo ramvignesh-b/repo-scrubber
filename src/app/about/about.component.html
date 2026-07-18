@@ -1,84 +1,90 @@
 <div class="about-container">
-    <div class="Subhead">
-        <div class="Subhead-heading d-flex flex-items-center" style="gap: 10px;">
-            <span octicon="info" [size]="20"></span>
-            About Repo Scrubber
-        </div>
-        <p class="Subhead-description">Simplify your GitHub workspace cleanup.</p>
+  <div class="Subhead">
+    <div class="Subhead-heading d-flex flex-items-center" style="gap: 10px">
+      <span octicon="info" [size]="20"></span>
+      About Repo Scrubber
     </div>
+    <p class="Subhead-description">Simplify your GitHub workspace cleanup.</p>
+  </div>
 
-    <!-- Tech stack labels -->
-    <div class="d-flex flex-wrap mb-4" style="gap: 6px;">
-        <span class="Label Label--accent">Angular 22</span>
-        <span class="Label Label--secondary">GitHub Primer</span>
-        <span class="Label Label--secondary">Zoneless</span>
-        <span class="Label Label--secondary">Signals</span>
-    </div>
+  <!-- Tech stack labels -->
+  <div class="d-flex flex-wrap mb-4" style="gap: 6px">
+    <span class="Label Label--accent">Angular 22</span>
+    <span class="Label Label--secondary">GitHub Primer</span>
+    <span class="Label Label--secondary">Zoneless</span>
+    <span class="Label Label--secondary">Signals</span>
+  </div>
 
-    <!-- What's this? -->
-    <div class="Box mb-3">
-        <div class="Box-header d-flex flex-items-center" style="gap: 8px;">
-            <span octicon="tools" [size]="16" style="color: var(--color-fg-muted);"></span>
-            <h3 class="Box-title">What is this tool?</h3>
-        </div>
-        <div class="Box-body color-fg-muted">
-            <p class="mb-0">
-                Repo Scrubber is a focused web application designed to help you bulk-delete unwanted or obsolete GitHub
-                repositories.
-                If you frequently fork repositories or accumulate old experimental projects, this utility cuts down on
-                the tedious manual deletion process.
-            </p>
-        </div>
+  <!-- What's this? -->
+  <div class="Box mb-3">
+    <div class="Box-header d-flex flex-items-center" style="gap: 8px">
+      <span octicon="tools" [size]="16" style="color: var(--color-fg-muted)"></span>
+      <h3 class="Box-title">What is this tool?</h3>
     </div>
+    <div class="Box-body color-fg-muted">
+      <p class="mb-0">
+        Repo Scrubber is a focused web application designed to help you bulk-delete unwanted or
+        obsolete GitHub repositories. If you frequently fork repositories or accumulate old
+        experimental projects, this utility cuts down on the tedious manual deletion process.
+      </p>
+    </div>
+  </div>
 
-    <!-- Why this? -->
-    <div class="Box mb-3">
-        <div class="Box-header d-flex flex-items-center" style="gap: 8px;">
-            <span octicon="question" [size]="16" style="color: var(--color-fg-muted);"></span>
-            <h3 class="Box-title">Why was it built?</h3>
-        </div>
-        <div class="Box-body color-fg-muted">
-            <p class="mb-2">
-                Manually deleting a repository on GitHub requires navigating multiple settings pages and typing the full
-                repository name to confirm.
-                For developers looking to tidy up their workspace, this flow is slow and repetitive.
-            </p>
-            <p class="mb-0">
-                While CLI scripts can automate this task, a secure web interface offers a more intuitive and visually
-                reassuring experience.
-                Repo Scrubber provides a simple, click-to-delete interface to manage multiple repositories efficiently.
-            </p>
-        </div>
+  <!-- Why this? -->
+  <div class="Box mb-3">
+    <div class="Box-header d-flex flex-items-center" style="gap: 8px">
+      <span octicon="question" [size]="16" style="color: var(--color-fg-muted)"></span>
+      <h3 class="Box-title">Why was it built?</h3>
     </div>
+    <div class="Box-body color-fg-muted">
+      <p class="mb-2">
+        Manually deleting a repository on GitHub requires navigating multiple settings pages and
+        typing the full repository name to confirm. For developers looking to tidy up their
+        workspace, this flow is slow and repetitive.
+      </p>
+      <p class="mb-0">
+        While CLI scripts can automate this task, a secure web interface offers a more intuitive and
+        visually reassuring experience. Repo Scrubber provides a simple, click-to-delete interface
+        to manage multiple repositories efficiently.
+      </p>
+    </div>
+  </div>
 
-    <!-- Security & Privacy -->
-    <div class="Box mb-4">
-        <div class="Box-header d-flex flex-items-center" style="gap: 8px;">
-            <span octicon="shield-lock" [size]="16" style="color: var(--color-fg-muted);"></span>
-            <h3 class="Box-title">Security &amp; Privacy</h3>
-        </div>
-        <div class="Box-body color-fg-muted">
-            <p class="mb-2">
-                <strong style="color: var(--color-fg-default);">Your personal access token is never saved, logged, or
-                    transmitted to any third-party server.</strong>
-                All API calls are executed directly from your browser to GitHub's public API endpoints.
-            </p>
-            <p class="mb-0">
-                Furthermore, this tool operates on both <strong style="color: var(--color-fg-default);">public</strong>
-                and
-                <strong style="color: var(--color-fg-default);">private</strong> repositories owned by your GitHub
-                account.
-                Always double-check before deleting — this action is irreversible.
-            </p>
-        </div>
+  <!-- Security & Privacy -->
+  <div class="Box mb-4">
+    <div class="Box-header d-flex flex-items-center" style="gap: 8px">
+      <span octicon="shield-lock" [size]="16" style="color: var(--color-fg-muted)"></span>
+      <h3 class="Box-title">Security &amp; Privacy</h3>
     </div>
+    <div class="Box-body color-fg-muted">
+      <p class="mb-2">
+        <strong style="color: var(--color-fg-default)"
+          >Your personal access token is never saved, logged, or transmitted to any third-party
+          server.</strong
+        >
+        All API calls are executed directly from your browser to GitHub's public API endpoints.
+      </p>
+      <p class="mb-0">
+        Furthermore, this tool operates on both
+        <strong style="color: var(--color-fg-default)">public</strong>
+        and
+        <strong style="color: var(--color-fg-default)">private</strong> repositories owned by your
+        GitHub account. Always double-check before deleting — this action is irreversible.
+      </p>
+    </div>
+  </div>
 
-    <!-- Source -->
-    <div class="d-flex">
-        <a href="https://github.com/ramvignesh-b/repo-scrubber" target="_blank" rel="noopener noreferrer"
-            class="btn d-inline-flex flex-items-center" style="gap: 6px;">
-            <span octicon="mark-github" [size]="16"></span>
-            View Source on GitHub
-        </a>
-    </div>
+  <!-- Source -->
+  <div class="d-flex">
+    <a
+      href="https://github.com/ramvignesh-b/repo-scrubber"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="btn d-inline-flex flex-items-center"
+      style="gap: 6px"
+    >
+      <span octicon="mark-github" [size]="16"></span>
+      View Source on GitHub
+    </a>
+  </div>
 </div>

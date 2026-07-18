@@ -62,7 +62,9 @@
   gap: 6px;
   margin-bottom: 16px;
 
-  &.mb-0 { margin-bottom: 0; }
+  &.mb-0 {
+    margin-bottom: 0;
+  }
 }
 
 .form-label {
@@ -77,7 +79,9 @@
   align-items: center;
   justify-content: space-between;
 
-  .form-label { margin: 0; }
+  .form-label {
+    margin: 0;
+  }
 }
 
 .show-hide-btn {
@@ -89,7 +93,9 @@
   padding: 0;
   line-height: 1;
 
-  &:hover { text-decoration: underline; }
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 /* ================================================
@@ -108,5 +114,7 @@
   align-items: center;
   gap: 4px;
 
-  &:hover { text-decoration: underline; }
+  &:hover {
+    text-decoration: underline;
+  }
 }

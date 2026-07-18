@@ -7,6 +7,6 @@ import { OcticonDirective } from '../shared/octicon.directive';
   standalone: true,
   imports: [CommonModule, OcticonDirective],
   templateUrl: './about.component.html',
-  styleUrls: ['./about.component.scss']
+  styleUrls: ['./about.component.scss'],
 })
 export class AboutComponent {}

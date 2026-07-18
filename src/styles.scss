@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@import "@primer/css/dist/primer.css";
+@import '@primer/css/dist/primer.css';
 
 /* GitHub dark mode color overrides matching github.com */
 :root {
@@ -89,10 +89,13 @@
   --color-underlinenav-border-active: #f78166;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji';
   background-color: var(--color-canvas-default);
   color: var(--color-fg-default);
   font-size: 14px;
@@ -120,10 +123,20 @@ html, body {
 /* ================================================
    Scrollbar
    ================================================ */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: var(--color-canvas-default); }
-::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #484f58; }
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-canvas-default);
+}
+::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #484f58;
+}
 
 /* ================================================
    Header / Navbar override for dark mode
@@ -152,7 +165,9 @@ html, body {
   text-decoration: none !important;
   opacity: 0.8;
   transition: opacity 0.1s ease;
-  &:hover { opacity: 1; }
+  &:hover {
+    opacity: 1;
+  }
 }
 
 /* ================================================
@@ -184,7 +199,9 @@ html, body {
   align-items: center !important;
   gap: 6px !important;
   cursor: pointer;
-  transition: color 0.1s ease, border-color 0.1s ease;
+  transition:
+    color 0.1s ease,
+    border-color 0.1s ease;
   margin-bottom: -1px;
   white-space: nowrap;
 
@@ -230,8 +247,12 @@ html, body {
   padding: 12px 16px !important;
   transition: background-color 0.1s ease;
 
-  &:first-child { border-top: none !important; }
-  &:hover { background-color: var(--color-canvas-default) !important; }
+  &:first-child {
+    border-top: none !important;
+  }
+  &:hover {
+    background-color: var(--color-canvas-default) !important;
+  }
 }
 
 /* ================================================
@@ -248,7 +269,9 @@ html, body {
   height: 32px !important;
   width: 100% !important;
   box-sizing: border-box !important;
-  transition: border-color 0.1s ease, box-shadow 0.1s ease;
+  transition:
+    border-color 0.1s ease,
+    box-shadow 0.1s ease;
 
   &:focus {
     border-color: var(--color-accent-emphasis) !important;
@@ -256,7 +279,9 @@ html, body {
     outline: none !important;
   }
 
-  &::placeholder { color: var(--color-fg-subtle) !important; }
+  &::placeholder {
+    color: var(--color-fg-subtle) !important;
+  }
 }
 
 .form-select {
@@ -289,7 +314,9 @@ html, body {
   padding: 5px 16px !important;
   line-height: 20px !important;
   cursor: pointer;
-  transition: background-color 0.1s ease, border-color 0.1s ease;
+  transition:
+    background-color 0.1s ease,
+    border-color 0.1s ease;
 
   &:hover:not([disabled]) {
     background-color: var(--color-btn-hover-bg) !important;
@@ -438,7 +465,9 @@ html, body {
     background-color: var(--color-border-muted);
   }
 
-  &:last-child::before { display: none; }
+  &:last-child::before {
+    display: none;
+  }
 }
 
 .TimelineItem-badge {
@@ -544,8 +573,12 @@ html, body {
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ================================================
@@ -559,7 +592,8 @@ html, body {
    Misc utilities
    ================================================ */
 code {
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  font-family:
+    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
   font-size: 85%;
   background-color: var(--color-neutral-muted);
   padding: 0.2em 0.4em;
@@ -611,7 +645,9 @@ code {
     margin-right: 0;
   }
 
-  &:hover, &:focus, &.selected {
+  &:hover,
+  &:focus,
+  &.selected {
     z-index: 1;
   }
 
@@ -625,4 +661,3 @@ code {
     border-color: var(--color-accent-emphasis) !important;
   }
 }
-

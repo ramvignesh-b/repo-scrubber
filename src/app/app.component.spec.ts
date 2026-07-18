@@ -9,12 +9,7 @@ describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppComponent],
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        provideAnimations(),
-        ApiService
-      ]
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideAnimations(), ApiService],
     }).compileComponents();
   });
 

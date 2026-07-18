@@ -12,14 +12,8 @@ describe('RepoListComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [RepoListComponent],
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        provideAnimations(),
-        ApiService
-      ]
-    })
-    .compileComponents();
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideAnimations(), ApiService],
+    }).compileComponents();
   });
 
   beforeEach(() => {

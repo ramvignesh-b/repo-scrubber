@@ -38,17 +38,15 @@
                   placeholder="e.g. octocat"
                   required
                   [disabled]="disableForm()"
-                  [(ngModel)]="username">
+                  [(ngModel)]="username"
+                />
               </div>
 
               <!-- Token -->
               <div class="form-group">
                 <div class="form-label-row">
                   <label class="form-label" for="token">Personal Access Token</label>
-                  <button
-                    class="show-hide-btn"
-                    type="button"
-                    (click)="hideToken.set(!hideToken())">
+                  <button class="show-hide-btn" type="button" (click)="hideToken.set(!hideToken())">
                     {{ hideToken() ? 'Show' : 'Hide' }}
                   </button>
                 </div>
@@ -60,7 +58,8 @@
                   placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
                   required
                   [disabled]="disableForm()"
-                  [(ngModel)]="token">
+                  [(ngModel)]="token"
+                />
                 <p class="note">Your token is processed in-memory only and never stored.</p>
               </div>
 
@@ -69,7 +68,8 @@
                 <button
                   class="btn btn-primary btn-block"
                   type="submit"
-                  [disabled]="disableForm() || !validate()">
+                  [disabled]="disableForm() || !validate()"
+                >
                   @if (disableForm()) {
                     <span octicon="sync" [size]="14" class="anim-rotate"></span>
                   } @else {
@@ -88,7 +88,8 @@
           <a
             href="#"
             class="auth-guide-link"
-            (click)="activeTab.set('how-to'); $event.preventDefault();">
+            (click)="activeTab.set('how-to'); $event.preventDefault()"
+          >
             Read the Setup Guide
             <span octicon="arrow-right" [size]="12"></span>
           </a>
@@ -97,7 +98,11 @@
     }
 
     @if (enableList()) {
-      <app-repo-list [repoList]="repoList()" (load)="pageLoader($event)" (refresh)="onSubmit()"></app-repo-list>
+      <app-repo-list
+        [repoList]="repoList()"
+        (loadList)="pageLoader($event)"
+        (refresh)="onSubmit()"
+      ></app-repo-list>
     }
   }
 
