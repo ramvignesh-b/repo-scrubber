@@ -30,6 +30,8 @@ export class RepoListComponent {
   searchText = signal('');
   visibilityFilter = signal<'all' | 'public' | 'private'>('all');
   typeFilter = signal<'all' | 'original' | 'forked'>('all');
+  sortBy = signal<'name' | 'date'>('name');
+  sortDirection = signal<'asc' | 'desc'>('asc');
   selectedRepos = signal<Set<string>>(new Set());
   showConfirmModal = signal(false);
   flashes = signal<{ message: string; type: 'success' | 'error' }[]>([]);
@@ -58,6 +60,21 @@ export class RepoListComponent {
     } else if (type === 'original') {
       list = list.filter((repo) => !repo.fork);
     }
+
+    // 4. Sort
+    const field = this.sortBy();
+    const direction = this.sortDirection();
+    list = [...list].sort((a, b) => {
+      let comparison = 0;
+      if (field === 'name') {
+        comparison = a.name.localeCompare(b.name);
+      } else if (field === 'date') {
+        const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+        const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+        comparison = dateA - dateB;
+      }
+      return direction === 'asc' ? comparison : -comparison;
+    });
 
     return list;
   });
@@ -94,6 +111,30 @@ export class RepoListComponent {
       });
     }
     this.selectedRepos.set(current);
+  }
+
+  setVisibilityFilter(value: 'all' | 'public' | 'private'): void {
+    if (value === 'all') {
+      this.visibilityFilter.set('all');
+    } else {
+      if (this.visibilityFilter() === value) {
+        this.visibilityFilter.set('all');
+      } else {
+        this.visibilityFilter.set(value);
+      }
+    }
+  }
+
+  setTypeFilter(value: 'all' | 'original' | 'forked'): void {
+    if (value === 'all') {
+      this.typeFilter.set('all');
+    } else {
+      if (this.typeFilter() === value) {
+        this.typeFilter.set('all');
+      } else {
+        this.typeFilter.set(value);
+      }
+    }
   }
 
   showFlash(message: string, type: 'success' | 'error'): void {
@@ -151,10 +192,21 @@ export class RepoListComponent {
     }
   }
 
+  toggleSort(field: 'name' | 'date'): void {
+    if (this.sortBy() === field) {
+      this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
+    } else {
+      this.sortBy.set(field);
+      this.sortDirection.set('asc');
+    }
+  }
+
   reset(): void {
     this.searchText.set('');
     this.visibilityFilter.set('all');
     this.typeFilter.set('all');
+    this.sortBy.set('name');
+    this.sortDirection.set('asc');
     this.selectedRepos.set(new Set());
     this.refresh.emit();
   }

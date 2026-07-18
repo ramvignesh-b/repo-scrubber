@@ -1,49 +1,34 @@
 <header class="Header">
-  <div class="Header-item mr-3">
-    <a
+    <div class="Header-item mr-3">
+        <!-- <a
       href="#"
       class="Header-link d-flex flex-items-center"
       style="font-weight: 600; font-size: 16px; gap: 8px"
     >
       <span octicon="repo" [size]="20" style="color: #f0883e"></span>
       Repo Scrubber
-    </a>
-  </div>
+    </a> -->
+    </div>
 
-  <div class="Header-item Header-item--full">
-    <nav class="UnderlineNav" aria-label="Main Navigation">
-      <div class="UnderlineNav-body">
-        <button
-          class="UnderlineNav-item"
-          [class.selected]="activeId() === 'scrub'"
-          (click)="setActive('scrub')"
-          type="button"
-          aria-label="Scrub repositories"
-        >
-          <span octicon="git-pull-request" [size]="16"></span>
-          Scrub
-        </button>
-        <button
-          class="UnderlineNav-item"
-          [class.selected]="activeId() === 'how-to'"
-          (click)="setActive('how-to')"
-          type="button"
-          aria-label="Setup guide"
-        >
-          <span octicon="book" [size]="16"></span>
-          How To?
-        </button>
-        <button
-          class="UnderlineNav-item"
-          [class.selected]="activeId() === 'about'"
-          (click)="setActive('about')"
-          type="button"
-          aria-label="About Repo Scrubber"
-        >
-          <span octicon="info" [size]="16"></span>
-          About
-        </button>
-      </div>
-    </nav>
-  </div>
+    <div class="Header-item Header-item--full">
+        <nav class="UnderlineNav" aria-label="Main Navigation">
+            <div class="UnderlineNav-body">
+                <button class="UnderlineNav-item" [class.selected]="activeId() === 'scrub'" (click)="setActive('scrub')"
+                    type="button" aria-label="Scrub repositories">
+                    <span octicon="git-pull-request" [size]="16"></span>
+                    Scrub
+                </button>
+                <button class="UnderlineNav-item" [class.selected]="activeId() === 'how-to'"
+                    (click)="setActive('how-to')" type="button" aria-label="Setup guide">
+                    <span octicon="book" [size]="16"></span>
+                    How To?
+                </button>
+                <button class="UnderlineNav-item" [class.selected]="activeId() === 'about'" (click)="setActive('about')"
+                    type="button" aria-label="About Repo Scrubber">
+                    <span octicon="info" [size]="16"></span>
+                    About
+                </button>
+            </div>
+        </nav>
+    </div>
 </header>

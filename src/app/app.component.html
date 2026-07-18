@@ -71,7 +71,10 @@
                   [disabled]="disableForm() || !validate()"
                 >
                   @if (disableForm()) {
-                    <span octicon="sync" [size]="14" class="anim-rotate"></span>
+                    <svg class="anim-rotate" width="14" height="14" viewBox="0 0 16 16" fill="none" style="vertical-align: middle;">
+                      <circle cx="8" cy="8" r="7" stroke="rgba(255, 255, 255, 0.2)" stroke-width="2" />
+                      <path d="M15 8a7 7 0 0 1-7 7" stroke="#ffffff" stroke-width="2" stroke-linecap="round" />
+                    </svg>
                   } @else {
                     <span octicon="repo" [size]="14"></span>
                   }

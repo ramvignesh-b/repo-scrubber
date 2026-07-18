@@ -660,3 +660,11 @@ code {
     border-color: var(--color-accent-emphasis) !important;
   }
 }
+
+span[octicon] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
