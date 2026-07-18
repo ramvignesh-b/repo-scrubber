@@ -4,10 +4,11 @@
       <span octicon="question" [size]="20"></span>
       Setup Guide
     </div>
-    <p class="Subhead-description">Get your Personal Access Token (classic) in 3 simple steps.</p>
+    <p class="Subhead-description">Get your Fine-grained Personal Access Token (recommended) in 3 simple steps.</p>
   </div>
 
-  <ol class="Timeline">
+  <!-- Recommended Fine-Grained Token Steps -->
+  <ol class="Timeline mb-4">
     <!-- Step 1 -->
     <li class="TimelineItem">
       <div class="TimelineItem-badge">
@@ -15,24 +16,23 @@
       </div>
       <div class="TimelineItem-body">
         <h3 class="f4 mb-1" style="color: var(--color-fg-default); font-weight: 600">
-          Navigate to GitHub Token Settings
+          Navigate to Fine-Grained Tokens Settings
         </h3>
         <p class="color-fg-muted mb-3 f5">
-          Go to
+          Go to the
           <a
-            href="https://github.com/settings/tokens"
+            href="https://github.com/settings/personal-access-tokens"
             target="_blank"
             rel="noopener noreferrer"
             style="color: var(--color-accent-fg)"
           >
-            GitHub Personal Access Tokens Settings </a
-          >. Click on the <strong>Generate new token</strong> dropdown and select
-          <strong>Generate new token (classic)</strong>.
+            GitHub Fine-Grained Personal Access Tokens Settings </a
+          > page. Click on the <strong>Generate new token</strong> button in the top right corner.
         </p>
         <div class="step-screenshot">
           <img
-            src="assets/1.jpg"
-            alt="GitHub Token Settings page showing Generate new token dropdown"
+            src="assets/pat-1.png"
+            alt="GitHub Fine-Grained Token Settings page showing Generate new token button"
           />
         </div>
       </div>
@@ -45,29 +45,21 @@
       </div>
       <div class="TimelineItem-body">
         <h3 class="f4 mb-1" style="color: var(--color-fg-default); font-weight: 600">
-          Select Required Scopes
+          Select Administration Permissions
         </h3>
         <p class="color-fg-muted mb-3 f5">
-          Give your token a descriptive note (e.g., <code>repo-scrubber</code>). To allow bulk
-          deletion, check the following checkboxes under scopes:
+          Give your token a descriptive name (e.g., <code>repo-scrubber</code>). Under <strong>Repository access</strong>, select the repositories you want to manage (or select <strong>All repositories</strong>). Scroll down to <strong>Repository permissions</strong>, find the <strong>Administration</strong> permission, and set it to <strong>Read and write</strong>.
         </p>
 
-        <!-- Scopes list -->
+        <!-- Permissions Box -->
         <div class="Box mb-3">
           <div class="Box-row d-flex flex-items-center" style="gap: 10px">
             <span octicon="check-circle-fill" [size]="16" color="var(--color-success-fg)"></span>
             <div>
-              <code>repo</code>
+              <code>Administration</code>
               <span class="color-fg-muted ml-2 f6"
-                >Full control of public &amp; private repositories</span
+                >Access: <strong>Read and Write</strong> (required to delete repositories)</span
               >
-            </div>
-          </div>
-          <div class="Box-row d-flex flex-items-center" style="gap: 10px">
-            <span octicon="check-circle-fill" [size]="16" color="var(--color-success-fg)"></span>
-            <div>
-              <code>delete_repo</code>
-              <span class="color-fg-muted ml-2 f6">Delete repositories</span>
             </div>
           </div>
         </div>
@@ -75,15 +67,14 @@
         <div class="flash flash-warn mb-3" role="alert">
           <span octicon="alert" [size]="16"></span>
           <span
-            ><strong>Security Warning:</strong> Only grant these two classic scopes. Do not grant
-            unnecessary scopes to protect your account.</span
+            ><strong>Security Warning:</strong> Only grant the Administration (Read and Write) repository permission. Do not grant any other unnecessary repository or organization permissions to protect your account.</span
           >
         </div>
 
         <div class="step-screenshot">
           <img
-            src="assets/2.jpg"
-            alt="GitHub New Token page with repo and delete_repo scopes checked"
+            src="assets/pat-2.png"
+            alt="GitHub Fine-Grained Token creation showing Repository permissions and Administration Read and write"
           />
         </div>
       </div>
@@ -100,16 +91,138 @@
         </h3>
         <p class="color-fg-muted mb-3 f5">
           Click <strong>Generate token</strong> at the bottom of the page. Copy the generated token
-          string immediately — you won't be able to see it again. Paste the token along with your
-          GitHub username on the <strong>Scrub</strong> page.
+          immediately (it starts with <code>github_pat_</code>) — you won't be able to see it again. Paste the token along with your GitHub username on the <strong>Scrub</strong> page.
         </p>
         <div class="step-screenshot">
           <img
-            src="assets/3.jpg"
-            alt="GitHub Personal Access Tokens page showing newly generated token to copy"
+            src="assets/pat-3.png"
+            alt="GitHub page showing newly generated Fine-Grained token to copy"
           />
         </div>
       </div>
     </li>
   </ol>
+
+  <!-- Legacy Classic Token Toggle -->
+  <div class="mt-5">
+    <details class="details-reset Box">
+      <summary class="Box-header d-flex flex-items-center flex-justify-between" style="cursor: pointer; user-select: none;">
+        <div class="d-flex flex-items-center" style="gap: 8px;">
+          <span octicon="history" [size]="16" class="color-fg-muted"></span>
+          <span style="font-weight: 600; color: var(--color-fg-default);">Legacy Method: Classic Tokens (Not Recommended)</span>
+        </div>
+        <span class="Label mr-2" style="background-color: var(--color-border-default);">Legacy</span>
+      </summary>
+      <div class="Box-body bg-canvas-default">
+        <p class="color-fg-muted mb-4 f5">
+          Classic Personal Access Tokens grant wider account-level scopes. While supported, they are less secure than fine-grained tokens.
+        </p>
+        <ol class="Timeline">
+          <!-- Step 1 -->
+          <li class="TimelineItem">
+            <div class="TimelineItem-badge">
+              <span octicon="key" [size]="16"></span>
+            </div>
+            <div class="TimelineItem-body">
+              <h3 class="f4 mb-1" style="color: var(--color-fg-default); font-weight: 600">
+                Navigate to GitHub Token Settings
+              </h3>
+              <p class="color-fg-muted mb-3 f5">
+                Go to
+                <a
+                  href="https://github.com/settings/tokens"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style="color: var(--color-accent-fg)"
+                >
+                  GitHub Personal Access Tokens Settings </a
+                >. Click on the <strong>Generate new token</strong> dropdown and select
+                <strong>Generate new token (classic)</strong>.
+              </p>
+              <div class="step-screenshot">
+                <img
+                  src="assets/1.jpg"
+                  alt="GitHub Token Settings page showing Generate new token dropdown"
+                />
+              </div>
+            </div>
+          </li>
+
+          <!-- Step 2 -->
+          <li class="TimelineItem">
+            <div class="TimelineItem-badge">
+              <span octicon="checklist" [size]="16"></span>
+            </div>
+            <div class="TimelineItem-body">
+              <h3 class="f4 mb-1" style="color: var(--color-fg-default); font-weight: 600">
+                Select Required Scopes
+              </h3>
+              <p class="color-fg-muted mb-3 f5">
+                Give your token a descriptive note (e.g., <code>repo-scrubber</code>). To allow bulk
+                deletion, check the following checkboxes under scopes:
+              </p>
+
+              <!-- Scopes list -->
+              <div class="Box mb-3">
+                <div class="Box-row d-flex flex-items-center" style="gap: 10px">
+                  <span octicon="check-circle-fill" [size]="16" color="var(--color-success-fg)"></span>
+                  <div>
+                    <code>repo</code>
+                    <span class="color-fg-muted ml-2 f6"
+                      >Full control of public &amp; private repositories</span
+                    >
+                  </div>
+                </div>
+                <div class="Box-row d-flex flex-items-center" style="gap: 10px">
+                  <span octicon="check-circle-fill" [size]="16" color="var(--color-success-fg)"></span>
+                  <div>
+                    <code>delete_repo</code>
+                    <span class="color-fg-muted ml-2 f6">Delete repositories</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flash flash-warn mb-3" role="alert">
+                <span octicon="alert" [size]="16"></span>
+                <span
+                  ><strong>Security Warning:</strong> Only grant these two classic scopes. Do not grant
+                  unnecessary scopes to protect your account.</span
+                >
+              </div>
+
+              <div class="step-screenshot">
+                <img
+                  src="assets/2.jpg"
+                  alt="GitHub New Token page with repo and delete_repo scopes checked"
+                />
+              </div>
+            </div>
+          </li>
+
+          <!-- Step 3 -->
+          <li class="TimelineItem">
+            <div class="TimelineItem-badge">
+              <span octicon="copy" [size]="16"></span>
+            </div>
+            <div class="TimelineItem-body">
+              <h3 class="f4 mb-1" style="color: var(--color-fg-default); font-weight: 600">
+                Copy Token &amp; Start Scrubbing
+              </h3>
+              <p class="color-fg-muted mb-3 f5">
+                Click <strong>Generate token</strong> at the bottom of the page. Copy the generated token
+                string immediately — you won't be able to see it again. Paste the token along with your
+                GitHub username on the <strong>Scrub</strong> page.
+              </p>
+              <div class="step-screenshot">
+                <img
+                  src="assets/3.jpg"
+                  alt="GitHub Personal Access Tokens page showing newly generated token to copy"
+                />
+              </div>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </details>
+  </div>
 </div>
